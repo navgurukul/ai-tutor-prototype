@@ -64,13 +64,16 @@ All four flow boards work end to end.
 - **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and press "Check again" to clear it.
 - **Asking:** a question can be sent by voice, by a suggestion chip, or by typing. Tap the mic to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text field instead.
 - **Fake mic:** switch on **Scenarios → Fake mic** to have a sample question typed out instead of using the microphone. The real microphone needs Chrome or Edge, internet, and permission.
-- **Answering:** thinking steps show under the question and change only when a service finishes. Then the answer appears with its book, chapter and page, and is read aloud if Voice is on.
+- **Answering:** thinking steps show under the question and change only when a service finishes. When the search is done, its step says where the answer was found, like "Found it in Science, Chapter 12, page 215". Then the answer appears with its book, chapter and page, and is read aloud if Voice is on.
+- **Not in the books:** when the search finds nothing, the tutor says "I couldn't find this in your Class 6 books. Try asking it another way, or ask your teacher." It never answers from outside the books.
 - **After an answer:** "Hear again" reads it again and turns into "Stop" while the tutor speaks. "Explain simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
 - **Hard paths:** every switch in **Scenarios** changes what happens here: Slow laptop (a "Still working" line after 10 seconds), Cold model ("Getting ready" first), Next search finds nothing, and Next answer fails ("Something went wrong." with "Try again").
 - **Recent chats:** each profile sees only its own chats, most recently used first. Any of them can be opened and continued. "New chat" starts an empty one, which joins the list with its first question.
 - **Chat titles:** a chat is first named after its question, cut to 40 characters. Once the first answer has been read aloud (or has appeared, with Voice off) a short title replaces it. A new question asked while the title is being written cancels that job, and it runs again after the next answer.
 - **Switch and idle return:** "Switch" goes back to the profile picker and stops the voice. So does 15 minutes with no pointer, keyboard, listening, speaking or waiting for an answer. Switch on **Scenarios → Short idle timer** to make that 30 seconds.
 - **Sidebar:** full at 1200 px and wider, an icon rail from 1024 to 1199 px, and a drawer below 1024 px. Use **Frame** in the dark bar, or resize the window, to see each.
+- **Keyboard:** Tab reaches every control, in the order it is on screen, with a purple focus ring. Space or Enter on the mic starts and stops listening. Esc cancels listening and closes the drawer or a dialog. Focus is never left on a control that has gone away: an empty chat starts on the mic, a spoken question keeps focus on the mic, and a typed one keeps it in the text field.
+- **Reduced motion:** with the system setting on, the mic's rings and the thinking icon stay still and nothing slides or fades.
 
 Only about a dozen questions have a written answer (see `src/data/answers.ts`). To see the first launch again, use **Scenarios → Reset prototype**.
 
@@ -126,7 +129,29 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 5 · Asking | Built |
 | 6 · Thinking and answer | Built |
 | 7 · History | Built |
-| 8 · Polish and QA | Not started |
+| 8 · Polish and QA | Built |
+
+## QA
+
+Phase 8 checked the build against the acceptance checklist in `Spec.md`. The checks ran on a local build in headless Chrome on a Mac, driven by scripts.
+
+| Check | How | Result |
+| --- | --- | --- |
+| The 13 behaviour items in the checklist, from first launch to the sidebar breakpoints | Each one driven through the screens on the build | Pass |
+| Keyboard | Every screen walked with Tab, Space, Enter and Esc only, from first launch to Switch | Pass |
+| Window sizes | 27 screen states, most of them at 1920 × 1080, 1366 × 768, 1280 × 720, 1100 wide and 1024 × 640, checked for clipped, hidden or overflowing content | Pass |
+| 150% zoom | The same states at 150% browser zoom of 1366 × 768 and of 1024 × 640 | Pass |
+| Tokens | Inspect's own reader run on every element of those states | No "not a token" in product UI |
+| Contrast | Every piece of visible text against its real background | No AA failures. Disabled controls are below AA, which WCAG allows |
+| Text size | Every piece of visible text | Nothing under 12 px |
+| Reduced motion | With the system setting emulated | No animation or transition runs |
+| Network | Requests logged across the whole run | None leave the page's own address |
+
+Still to check by hand, because a script can't:
+
+- The real microphone and the real tutor voice, in Chrome or Edge. The scripts used the Fake mic and a stand-in voice.
+- The deployed link on Windows, which is where the checklist asks for the final tick.
+- The full 15-minute idle return. Only the 30-second version was waited out.
 
 ## Fonts
 

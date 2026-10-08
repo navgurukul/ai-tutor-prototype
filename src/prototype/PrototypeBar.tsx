@@ -50,6 +50,8 @@ export default function PrototypeBar({ frameId, onFrame }: Props) {
         >
           Scenarios{active > 0 ? `: ${active} on` : ''}
         </button>
+        {/* Straight after its button, so Tab goes from one into the other. */}
+        {scenariosOpen && <ScenarioPanel onClose={closeScenarios} />}
         <span className={styles.divider} aria-hidden="true" />
         <NavLink to="/" className={inApp ? `${styles.item} ${styles.active}` : styles.item}>
           App
@@ -64,7 +66,6 @@ export default function PrototypeBar({ frameId, onFrame }: Props) {
           </NavLink>
         ))}
       </nav>
-      {scenariosOpen && <ScenarioPanel onClose={closeScenarios} />}
     </header>
   )
 }

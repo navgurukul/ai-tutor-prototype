@@ -29,16 +29,18 @@
   color: var(--gray-500);
 }
 
-/* The list scrolls. The side padding leaves room for a row's focus ring. */
+/* The list scrolls. The padding leaves room for a row's focus ring, and the
+   negative margin keeps the rows where they would sit without it. */
 .list {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   flex: 1;
   min-height: 0;
-  margin: 0 calc(var(--space-2) * -1);
-  padding: var(--space-1) var(--space-2);
+  margin: calc(var(--space-1) * -1) calc(var(--space-2) * -1);
+  padding: var(--space-2);
   overflow-y: auto;
+  scroll-padding: var(--space-2);
 }
 
 .profile {

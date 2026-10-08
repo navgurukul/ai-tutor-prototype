@@ -79,7 +79,7 @@ export default function TutorAnswer({ text, source, speaking = false, onHearAgai
               </Button>
             ))}
           {onExplainSimpler && (
-            <Button variant="ghost" onClick={onExplainSimpler} disabled={busy}>
+            <Button variant="ghost" onClick={onExplainSimpler} busy={busy}>
               Explain simpler
             </Button>
           )}

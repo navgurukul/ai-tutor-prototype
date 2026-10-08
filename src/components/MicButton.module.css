@@ -30,11 +30,11 @@
   height: var(--icon-32);
 }
 
-.mic:hover:not(:disabled) {
+.mic:hover:not(:disabled, [aria-disabled='true']) {
   transform: scale(1.04);
 }
 
-.mic:active:not(:disabled) {
+.mic:active:not(:disabled, [aria-disabled='true']) {
   transform: scale(0.96);
 }
 
@@ -42,7 +42,8 @@
   background: var(--purple-dark);
 }
 
-.mic:disabled {
+.mic:disabled,
+.mic[aria-disabled='true'] {
   background: var(--gray-200);
   color: var(--gray-400);
   box-shadow: none;

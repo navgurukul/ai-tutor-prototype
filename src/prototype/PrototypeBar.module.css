@@ -1,13 +1,15 @@
-/* In ink with white text, so nobody mistakes it for product UI. */
+/* In ink with white text, so nobody mistakes it for product UI. One 40 px
+   row, or two when the window is too narrow or zoomed in to fit everything. */
 .bar {
   position: relative;
   z-index: 20;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1) var(--space-2);
   flex: none;
-  height: var(--size-40);
-  padding: 0 var(--space-3);
+  min-height: var(--size-40);
+  padding: var(--space-1) var(--space-3);
   background: var(--ink);
   color: var(--white);
   font-family: var(--font-text);
@@ -32,6 +34,7 @@
 
 .tools {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1);
   margin-left: auto;
@@ -63,9 +66,11 @@
   color: var(--gray-400);
 }
 
-/* The purple ring is too dark to see on ink, so the bar's ring is white. */
+/* The purple ring is too dark to see on ink, so the bar's own controls get
+   a white one. The Scenarios panel is white, so it keeps the purple ring. */
 .bar > :focus-visible,
-.tools :focus-visible {
+.tools > :focus-visible,
+.frame :focus-visible {
   outline-color: var(--white);
 }
 

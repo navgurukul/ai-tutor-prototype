@@ -71,6 +71,9 @@ export const newId = () => crypto.randomUUID()
 // "NCERT · Class 6 Science · Ch 12 · p. 215"
 export const sourceLabel = (source: Source) => `NCERT · Class ${source.classNum} ${source.subject} · Ch ${source.chapter} · p. ${source.page}`
 
+// "Found it in Science, Chapter 12, page 215": the search step, once it is done.
+export const sourceFound = (source: Source) => `Found it in ${source.subject}, Chapter ${source.chapter}, page ${source.page}`
+
 // "Curiosity, Class 6 Science · Chapter 12: Beyond Earth · page 215"
 export const sourceDetail = (source: Source) =>
   `${source.book}, Class ${source.classNum} ${source.subject} · Chapter ${source.chapter}: ${source.chapterName} · page ${source.page}`

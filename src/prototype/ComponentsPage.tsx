@@ -709,7 +709,7 @@ export default function ComponentsPage() {
           <State label="Writing">
             <ThinkingSteps
               steps={[
-                { label: 'Searching your Class 6 books', state: 'done' },
+                { label: 'Found it in Science, Chapter 12, page 215', state: 'done' },
                 { label: 'Writing the answer', state: 'current', icon: PenLine },
               ]}
             />

@@ -20,7 +20,7 @@ export default function ScreenLayout() {
     <div className={styles.layout}>
       {state.memoryLow && (
         <div className={styles.banner}>
-          <StatusBanner tone="warning" action={{ label: 'Check again', onClick: checkAgain, disabled: checking }}>
+          <StatusBanner tone="warning" action={{ label: 'Check again', onClick: checkAgain, busy: checking }}>
             Your laptop is running low on memory. Close other apps, like Chrome, so your tutor runs smoothly.
           </StatusBanner>
         </div>

@@ -28,7 +28,10 @@ export default function ScenarioPanel({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (confirming) return
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Escape') return
+      onClose()
+      // Focus goes back to the button that opened the panel.
+      document.querySelector<HTMLElement>('[data-scenarios-toggle]')?.focus()
     }
     function onPointerDown(event: PointerEvent) {
       const target = event.target as Element

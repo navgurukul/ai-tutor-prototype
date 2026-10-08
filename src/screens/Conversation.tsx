@@ -61,11 +61,21 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
   const [draft, setDraft] = useState('')
   const quietField = useRef<HTMLInputElement>(null)
   const composerField = useRef<HTMLTextAreaElement>(null)
-  // Goes up each time focus should move to the text field.
-  const [focusTurn, setFocusTurn] = useState(0)
+  // Whichever mic is on screen: the big one or the one in the composer.
+  const micButton = useRef<HTMLButtonElement>(null)
+  // Set each time keyboard focus should move, so it never ends up on a
+  // control that has just gone away.
+  const [focusMove, setFocusMove] = useState<{ to: 'field' | 'mic' } | null>(null)
   useEffect(() => {
-    if (focusTurn > 0) (composerField.current ?? quietField.current)?.focus()
-  }, [focusTurn])
+    if (focusMove?.to === 'mic') micButton.current?.focus()
+    if (focusMove?.to === 'field') (composerField.current ?? quietField.current)?.focus()
+  }, [focusMove])
+
+  // Voice comes first: a student who arrives with nothing in focus starts
+  // on the big mic, so Space is enough to speak.
+  useEffect(() => {
+    if (document.activeElement === document.body) micButton.current?.focus()
+  }, [])
 
   // The voice settings as they are when an answer arrives, not when it was asked for.
   const settings = useRef(state.settings)
@@ -123,7 +133,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     void tutor.ask(chatId, question, simpler)
   }
 
-  function send(text: string) {
+  function send(text: string, by: 'typing' | 'mic' = 'typing') {
     const question = text.trim()
     if (!question || busy) return
     const message = studentMessage(question)
@@ -141,18 +151,21 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     ask(chatId, question)
     setDraft('')
     mic.forget()
-    // The empty chat's controls are about to go: carry on from the composer.
-    if (empty) setFocusTurn(focusTurn + 1)
+    // The control that sent it may be about to go: carry on from the
+    // composer, on the mic for a spoken question and in the field for a typed one.
+    setFocusMove({ to: by === 'mic' ? 'mic' : 'field' })
   }
 
   const mic = useListening({
     // With Fake mic on, a question from this class that hasn't been asked yet.
     sample: suggestions.find((question) => !messages.some((message) => message.text === question)),
-    onSend: send,
+    onSend: (question) => send(question, 'mic'),
     onTimeUp(transcript) {
       setDraft(`${draft} ${transcript}`.trim())
-      setFocusTurn(focusTurn + 1)
+      setFocusMove({ to: 'field' })
     },
+    // The Cancel button goes away, so focus goes back to the idle mic.
+    onCancel: () => setFocusMove({ to: 'mic' }),
   })
 
   // Waiting for an answer, speaking and listening are all use of the laptop.
@@ -176,6 +189,8 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     const about = last.small ? messages.find((message) => message.id === last.about) : undefined
     if (about?.role === 'tutor' && about.source) ask(chat.id, questionBefore(messages, about.id), about.source)
     else ask(chat.id, questionBefore(messages, last.id))
+    // The banner and its button are about to go.
+    setFocusMove({ to: 'field' })
   }
 
   function submitQuiet(event: FormEvent) {
@@ -200,7 +215,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
           </div>
 
           <div className={styles.micBlock}>
-            <MicButton size="empty" listening={mic.listening} onClick={tapMic} />
+            <MicButton ref={micButton} size="empty" listening={mic.listening} onClick={tapMic} />
             <p className={`caption ${styles.micCaption}`} role="status">
               {mic.listening ? 'Listening. Tap again to send.' : mic.missed ? MISSED : 'Tap to speak'}
             </p>
@@ -286,6 +301,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
           busy={busy}
           hint={mic.missed ? MISSED : undefined}
           inputRef={composerField}
+          micRef={micButton}
         />
       </div>
     </>

@@ -18,11 +18,12 @@ type Props = {
   busy?: boolean
   // A short line under the field, e.g. "I didn't catch that. Try again."
   hint?: string
-  // The text field, so a screen can move focus to it.
+  // The text field and the mic, so a screen can move focus to them.
   inputRef?: Ref<HTMLTextAreaElement>
+  micRef?: Ref<HTMLButtonElement>
 }
 
-export default function Composer({ value, onChange, onSend, onMic, onCancel, listening = false, transcript = '', busy = false, hint, inputRef }: Props) {
+export default function Composer({ value, onChange, onSend, onMic, onCancel, listening = false, transcript = '', busy = false, hint, inputRef, micRef }: Props) {
   const canSend = !busy && value.trim() !== ''
 
   function submit(event: FormEvent) {
@@ -40,7 +41,7 @@ export default function Composer({ value, onChange, onSend, onMic, onCancel, lis
 
   return (
     <form className={styles.composer} onSubmit={submit} data-inspect="Composer">
-      <MicButton listening={listening} disabled={busy} onClick={onMic} />
+      <MicButton ref={micRef} listening={listening} busy={busy} onClick={onMic} />
 
       <div className={styles.field}>
         {listening ? (

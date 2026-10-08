@@ -11,6 +11,8 @@ type Options = {
   onSend: (question: string) => void
   // The time limit passed: the transcript goes to the text field to be fixed.
   onTimeUp: (transcript: string) => void
+  // Cancel or Esc threw the transcript away.
+  onCancel: () => void
 }
 
 // One mic: tap to listen, tap again to send. The big mic on the empty chat
@@ -76,6 +78,7 @@ export function useListening(options: Options) {
     speech.cancelListening()
     setListening(false)
     setTranscript('')
+    latest.current.onCancel()
   }, [])
 
   useEffect(() => {

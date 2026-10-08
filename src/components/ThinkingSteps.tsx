@@ -14,10 +14,10 @@ export default function ThinkingSteps({ steps, slow = false }: Props) {
   return (
     <div className={styles.wrap} data-inspect="ThinkingSteps">
       <ol className={styles.steps}>
-        {steps.map((step) => {
+        {steps.map((step, index) => {
           const Icon = step.state === 'done' ? Check : (step.icon ?? LoaderCircle)
           return (
-            <li key={step.label} className={`text-sm ${styles.step} ${styles[step.state]}`}>
+            <li key={index} className={`text-sm ${styles.step} ${styles[step.state]}`}>
               <Icon aria-hidden="true" />
               {step.label}
               {step.state === 'done' && <span className="visually-hidden"> (done)</span>}

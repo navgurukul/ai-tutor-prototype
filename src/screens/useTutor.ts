@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ThinkingStep } from '../components/ThinkingSteps.tsx'
 import { model } from '../services/model.ts'
 import { retrieval } from '../services/retrieval.ts'
-import { newId, type Message, type Source } from '../state/types.ts'
+import { newId, sourceFound, type Message, type Source } from '../state/types.ts'
 
 // After this long the wait gets a reassuring line under the steps.
 const SLOW_AFTER = 10_000
@@ -90,6 +90,9 @@ export function useTutor(options: Options) {
           return
         }
         source = result.source
+        // The finished search step says where the answer will come from.
+        const searched = steps.at(-1)
+        if (searched && source) searched.label = sourceFound(source)
       }
 
       start('Writing the answer', PenLine)
