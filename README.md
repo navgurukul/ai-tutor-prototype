@@ -64,9 +64,12 @@ The app opens on the launch flow from flow board 1, then the chat from board 2.
 - **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and press "Check again" to clear it.
 - **Asking:** a question can be sent by voice, by a suggestion chip, or by typing. Tap the mic to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text field instead.
 - **Fake mic:** switch on **Scenarios → Fake mic** to have a sample question typed out instead of using the microphone. The real microphone needs Chrome or Edge, internet, and permission.
+- **Answering:** thinking steps show under the question and change only when a service finishes. Then the answer appears with its book, chapter and page, and is read aloud if Voice is on.
+- **After an answer:** "Hear again" reads it again and turns into "Stop" while the tutor speaks. "Explain simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
+- **Hard paths:** every switch in **Scenarios** changes what happens here: Slow laptop (a "Still working" line after 10 seconds), Cold model ("Getting ready" first), Next search finds nothing, and Next answer fails ("Something went wrong." with "Try again").
 - **Sidebar:** full at 1200 px and wider, an icon rail from 1024 to 1199 px, and a drawer below 1024 px. Use **Frame** in the dark bar, or resize the window, to see each.
 
-The tutor does not answer yet: that is Phase 6. To see the first launch again, use **Scenarios → Reset prototype**.
+Only about a dozen questions have a written answer (see `src/data/answers.ts`). To see the first launch again, use **Scenarios → Reset prototype**.
 
 ## Simulated services and scenarios
 
@@ -120,7 +123,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 3 · Services | Built |
 | 4 · Launch and profiles | Built |
 | 5 · Asking | Built |
-| 6 to 8 | Not started |
+| 6 · Thinking and answer | Built |
+| 7 and 8 | Not started |
 
 ## Fonts
 

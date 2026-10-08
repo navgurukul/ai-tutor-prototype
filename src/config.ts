@@ -2,4 +2,4 @@
 // screen reads it from here.
 export const APP_NAME = 'AI Tutor'
 
-export const PROTOTYPE_VERSION = 'v0.6 · Phase 5'
+export const PROTOTYPE_VERSION = 'v0.7 · Phase 6'

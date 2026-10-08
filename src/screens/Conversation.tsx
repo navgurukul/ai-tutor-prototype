@@ -7,16 +7,33 @@ import IconButton from '../components/IconButton.tsx'
 import Input from '../components/Input.tsx'
 import MessageStudent from '../components/MessageStudent.tsx'
 import MicButton from '../components/MicButton.tsx'
+import StatusBanner from '../components/StatusBanner.tsx'
+import ThinkingSteps from '../components/ThinkingSteps.tsx'
+import TutorAnswer from '../components/TutorAnswer.tsx'
 import { suggestionsFor } from '../data/answers.ts'
+import { speech } from '../services/speech.ts'
 import { placeholderTitle } from '../services/titles.ts'
 import { useStore } from '../state/storeContext.ts'
-import { newId, type Chat, type Message, type Profile } from '../state/types.ts'
+import { newId, sourceDetail, sourceLabel, speechRate, type Chat, type Message, type Profile } from '../state/types.ts'
 import styles from './Conversation.module.css'
 import { useListening } from './useListening.ts'
+import { useTutor } from './useTutor.ts'
 
 const MISSED = 'I didn’t catch that. Try again.'
 
 const studentMessage = (text: string): Message => ({ id: newId(), role: 'student', text, at: Date.now() })
+
+// The small message the app adds when the student asks for easier words.
+const simplerMessage = (about: string): Message => ({ id: newId(), role: 'student', text: 'Explain it simpler', small: true, about, at: Date.now() })
+
+// The question that led to a message: the nearest one the student asked before it.
+function questionBefore(messages: Message[], id: string): string {
+  for (let index = messages.findIndex((message) => message.id === id); index >= 0; index--) {
+    const message = messages[index]
+    if (message.role === 'student' && !message.small) return message.text
+  }
+  return ''
+}
 
 type Props = {
   profile: Profile
@@ -28,7 +45,7 @@ type Props = {
 // One chat: the empty state with the big mic, or the messages with the
 // composer docked under them.
 export default function Conversation({ profile, chat, onCreated }: Props) {
-  const { dispatch } = useStore()
+  const { state, dispatch } = useStore()
   const messages = chat?.messages ?? []
   const empty = messages.length === 0
   const suggestions = suggestionsFor(profile.classNum)
@@ -43,27 +60,66 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
     if (focusTurn > 0) (composerField.current ?? quietField.current)?.focus()
   }, [focusTurn])
 
-  // New messages are always in view.
+  // The voice settings as they are when an answer arrives, not when it was asked for.
+  const settings = useRef(state.settings)
+  useEffect(() => {
+    settings.current = state.settings
+  })
+
+  // The answer being read aloud, if any.
+  const [speakingId, setSpeakingId] = useState<string | null>(null)
+  useEffect(() => speech.on('end', () => setSpeakingId(null)), [])
+  function speak(message: Message) {
+    speech.speak(message.text, speechRate[settings.current.speed])
+    setSpeakingId(message.id)
+  }
+
+  // Leaving the chat stops the tutor's voice, and so does turning Voice off.
+  useEffect(() => () => speech.cancel(), [])
+  const { voiceOn } = state.settings
+  useEffect(() => {
+    if (!voiceOn) speech.cancel()
+  }, [voiceOn])
+
+  const tutor = useTutor({
+    classNum: profile.classNum,
+    onAnswer(chatId, message) {
+      dispatch({ type: 'chat/message', chatId, message })
+      // Only the newest answer speaks on its own.
+      if (settings.current.voiceOn) speak(message)
+    },
+  })
+  const busy = tutor.thinking !== null
+  // A question with nothing after it and nothing on the way: it went wrong.
+  const last = messages.at(-1)
+  const failed = !busy && last?.role === 'student'
+
+  // New messages and new steps are always in view.
   const scroller = useRef<HTMLDivElement>(null)
+  const stepCount = tutor.thinking?.steps.length
+  const slow = tutor.thinking?.slow
   useEffect(() => {
     if (scroller.current) scroller.current.scrollTop = scroller.current.scrollHeight
-  }, [messages.length])
+  }, [messages.length, stepCount, slow, failed])
 
   function send(text: string) {
     const question = text.trim()
-    if (!question) return
+    if (!question || busy) return
     const message = studentMessage(question)
+    // The chat joins Recent chats with its first question, and is named after it.
+    const chatId = chat?.id ?? newId()
     if (chat) {
-      dispatch({ type: 'chat/message', chatId: chat.id, message })
+      dispatch({ type: 'chat/message', chatId, message })
     } else {
-      // The chat joins Recent chats now, named after its first question.
-      const id = newId()
       dispatch({
         type: 'chat/add',
-        chat: { id, profileId: profile.id, title: placeholderTitle(question), titled: false, messages: [message], createdAt: message.at, updatedAt: message.at },
+        chat: { id: chatId, profileId: profile.id, title: placeholderTitle(question), titled: false, messages: [message], createdAt: message.at, updatedAt: message.at },
       })
-      onCreated(id)
+      onCreated(chatId)
     }
+    // The student has moved on, so the tutor stops reading the last answer.
+    speech.cancel()
+    void tutor.ask(chatId, question)
     setDraft('')
     mic.forget()
     // The empty chat's controls are about to go: carry on from the composer.
@@ -79,6 +135,27 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
       setFocusTurn(focusTurn + 1)
     },
   })
+
+  // Tapping the mic while the tutor is speaking stops the speech at once.
+  function tapMic() {
+    if (!mic.listening) speech.cancel()
+    mic.toggle()
+  }
+
+  function explainSimpler(answer: Message) {
+    if (!chat || busy || answer.role !== 'tutor' || !answer.source) return
+    dispatch({ type: 'chat/message', chatId: chat.id, message: simplerMessage(answer.id) })
+    speech.cancel()
+    void tutor.ask(chat.id, questionBefore(messages, answer.id), answer.source)
+  }
+
+  // Sends the unanswered question again, without repeating it in the chat.
+  function tryAgain() {
+    if (!chat || last?.role !== 'student') return
+    const about = last.small ? messages.find((message) => message.id === last.about) : undefined
+    if (about?.role === 'tutor' && about.source) void tutor.ask(chat.id, questionBefore(messages, about.id), about.source)
+    else void tutor.ask(chat.id, questionBefore(messages, last.id))
+  }
 
   function submitQuiet(event: FormEvent) {
     event.preventDefault()
@@ -102,7 +179,7 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
           </div>
 
           <div className={styles.micBlock}>
-            <MicButton size="empty" listening={mic.listening} onClick={mic.toggle} />
+            <MicButton size="empty" listening={mic.listening} onClick={tapMic} />
             <p className={`caption ${styles.micCaption}`} role="status">
               {mic.listening ? 'Listening. Tap again to send.' : mic.missed ? MISSED : 'Tap to speak'}
             </p>
@@ -148,18 +225,32 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
   return (
     <>
       <div className={styles.scroller} ref={scroller}>
-        <div className={styles.column}>
-          <ol className={styles.messages}>
-            {messages.map((message) =>
-              message.role === 'student' ? (
-                <li key={message.id}>
-                  <MessageStudent small={message.small}>{message.text}</MessageStudent>
-                </li>
-              ) : null,
-            )}
-          </ol>
-          {/* TEMPORARY: the thinking steps and the answer take this place in Phase 6. */}
-          <p className={`caption ${styles.note}`}>Prototype note: the tutor starts answering in Phase 6.</p>
+        {/* A log: screen readers hear each step and each answer as it arrives. */}
+        <div className={styles.column} role="log" aria-label="Conversation">
+          {messages.map((message) =>
+            message.role === 'student' ? (
+              <MessageStudent key={message.id} small={message.small}>
+                {message.text}
+              </MessageStudent>
+            ) : (
+              <TutorAnswer
+                key={message.id}
+                text={message.text}
+                source={message.source && { label: sourceLabel(message.source), detail: sourceDetail(message.source) }}
+                speaking={message.id === speakingId}
+                onHearAgain={() => speak(message)}
+                onStop={() => speech.cancel()}
+                onExplainSimpler={message.source && !message.simpler ? () => explainSimpler(message) : undefined}
+                busy={busy}
+              />
+            ),
+          )}
+          {tutor.thinking && <ThinkingSteps steps={tutor.thinking.steps} slow={tutor.thinking.slow} />}
+          {failed && (
+            <StatusBanner tone="error" action={{ label: 'Try again', onClick: tryAgain }}>
+              Something went wrong.
+            </StatusBanner>
+          )}
         </div>
       </div>
       <div className={styles.dock}>
@@ -167,10 +258,11 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
           value={draft}
           onChange={setDraft}
           onSend={() => send(draft)}
-          onMic={mic.toggle}
+          onMic={tapMic}
           onCancel={mic.cancel}
           listening={mic.listening}
           transcript={mic.transcript}
+          busy={busy}
           hint={mic.missed ? MISSED : undefined}
           inputRef={composerField}
         />

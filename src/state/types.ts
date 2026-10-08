@@ -25,10 +25,12 @@ export type Source = {
 }
 
 export type Message =
-  // `small` is the follow-up the app adds for "Explain simpler".
-  | { id: string; role: 'student'; text: string; small?: boolean; at: number }
+  // `small` is the follow-up the app adds for "Explain simpler", and `about`
+  // is the answer it asks about.
+  | { id: string; role: 'student'; text: string; small?: boolean; about?: string; at: number }
   // `plain` marks the "couldn't find it" message: answer style, no source.
-  | { id: string; role: 'tutor'; text: string; source?: Source; plain?: boolean; at: number }
+  // `simpler` marks an answer that is already the easier version.
+  | { id: string; role: 'tutor'; text: string; source?: Source; plain?: boolean; simpler?: boolean; at: number }
 
 export type Chat = {
   id: string
