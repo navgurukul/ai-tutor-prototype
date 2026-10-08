@@ -323,7 +323,7 @@ export default function TokensPage() {
         id="sizes"
         eyebrow="Not in the tokens file"
         title="Sizes and layout"
-        note="A guess to confirm. These are the fixed sizes from sections 11 and 12 of the tokens file, named so that component CSS never needs a raw px value."
+        note="The fixed sizes from sections 11 and 12 of the tokens file, named so that component CSS never needs a raw px value. Still to be added to the tokens file."
       >
         <Rows items={sizes} visual={(name) => <div className={styles.bar} style={{ width: v(name) }} />} />
       </Section>

@@ -134,7 +134,8 @@
   /*
    * Sizes and layout. Not named in the tokens file: these are the fixed
    * dimensions from its sections 11 and 12, named here so component CSS
-   * never needs a raw px value. Listed as a guess in the Phase 0 report.
+   * never needs a raw px value. Agreed with design in Phase 0; still to be
+   * added to docs/style-tokens.md.
    */
   --size-32: 32px;
   --size-40: 40px;
