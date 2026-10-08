@@ -1,4 +1,4 @@
-import { Check, LoaderCircle, type LucideIcon } from 'lucide-react'
+import { Check, Clock, LoaderCircle, type LucideIcon } from 'lucide-react'
 import styles from './ThinkingSteps.module.css'
 
 export type ThinkingStep = {
@@ -32,7 +32,12 @@ export default function ThinkingSteps({ steps, slow = false }: Props) {
           )
         })}
       </ol>
-      {slow && <p className={`caption ${styles.slow}`}>Still working on it. Just a few more moments.</p>}
+      {slow && (
+        <p className={`text-sm ${styles.step} ${styles.slow}`}>
+          <Clock aria-hidden="true" />
+          Still working on it. Just a few more moments.
+        </p>
+      )}
     </div>
   )
 }

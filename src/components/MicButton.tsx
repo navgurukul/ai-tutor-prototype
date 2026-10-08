@@ -1,4 +1,4 @@
-import { Mic } from 'lucide-react'
+import { Check, Mic } from 'lucide-react'
 import type { ButtonHTMLAttributes, Ref } from 'react'
 import styles from './MicButton.module.css'
 
@@ -34,7 +34,7 @@ export default function MicButton({ size = 'docked', listening = false, busy = f
           <span className={styles.ring} aria-hidden="true" />
         </>
       )}
-      <Mic aria-hidden="true" />
+      {listening ? <Check aria-hidden="true" /> : <Mic aria-hidden="true" />}
     </button>
   )
 }
