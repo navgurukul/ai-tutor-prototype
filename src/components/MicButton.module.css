@@ -1,0 +1,77 @@
+.mic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size-64);
+  height: var(--size-64);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: var(--elevation-4);
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.mic svg {
+  position: relative;
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+.empty {
+  width: var(--size-112);
+  height: var(--size-112);
+}
+
+.empty svg {
+  width: var(--icon-32);
+  height: var(--icon-32);
+}
+
+.mic:hover:not(:disabled) {
+  transform: scale(1.04);
+}
+
+.mic:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.listening {
+  background: var(--purple-dark);
+}
+
+.mic:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  box-shadow: none;
+}
+
+/* Two rings travel from the icon to the edge. With reduced motion they stay
+   put as two still rings. */
+.ring {
+  position: absolute;
+  inset: var(--space-1);
+  border: var(--border-2) solid var(--white-60);
+  border-radius: var(--radius-circle);
+  pointer-events: none;
+  animation: pulse var(--motion-pulse) ease-out infinite;
+}
+
+.ring + .ring {
+  transform: scale(0.76);
+  animation-delay: calc(var(--motion-pulse) / 2);
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,54 @@
+.composer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: var(--column-max);
+  padding: var(--space-3);
+  border-radius: var(--radius-24);
+  background: var(--white);
+  box-shadow: var(--elevation-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+/* Grows with the text, up to four lines. */
+.input {
+  display: block;
+  width: 100%;
+  max-height: calc(var(--text-line) * 4 + var(--space-2) * 2);
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-8);
+  background: none;
+  color: var(--gray-900);
+  font-family: var(--font-text);
+  font-size: var(--text-size);
+  line-height: var(--text-line);
+  font-weight: var(--weight-regular);
+  resize: none;
+  field-sizing: content;
+}
+
+.input::placeholder {
+  color: var(--gray-500);
+  opacity: 1;
+}
+
+.transcript {
+  padding: 0 var(--space-2);
+  color: var(--gray-900);
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  padding: 0 var(--space-2);
+  color: var(--gray-500);
+}

@@ -130,6 +130,7 @@
 
   /* 10 · Motion */
   --motion: 200ms ease-out;
+  --motion-pulse: 1600ms;
 
   /*
    * Sizes and layout. Not named in the tokens file: these are the fixed

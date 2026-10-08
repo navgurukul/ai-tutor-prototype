@@ -1,0 +1,128 @@
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.sectionTitle {
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-1) solid var(--gray-300);
+  scroll-margin-top: var(--space-5);
+}
+
+.specimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.specimenHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.spec {
+  color: var(--gray-700);
+}
+
+/* States sit side by side, on the app background, as they do in the app. */
+.states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-5) var(--space-6);
+}
+
+.stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.wide {
+  width: 100%;
+}
+
+.stateLabel {
+  color: var(--gray-500);
+}
+
+.holder {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.wide > .holder {
+  align-items: stretch;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.animalGrid {
+  display: grid;
+  grid-template-columns: repeat(5, var(--size-96));
+  gap: var(--space-3);
+}
+
+.cardSample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: var(--sidebar-width);
+}
+
+/* History rows live on the white sidebar. */
+.onWhite {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--sidebar-width) - var(--space-5)), 1fr));
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4);
+  border: var(--border-1) solid var(--gray-200);
+  border-radius: var(--radius-24);
+  background: var(--white);
+}
+
+.onWhite .holder {
+  align-items: stretch;
+}
+
+.sidebarStage {
+  height: calc(var(--size-112) * 4);
+  overflow: hidden;
+  border: var(--border-1) solid var(--gray-200);
+  border-radius: var(--radius-16);
+}
+
+/* The reading column: messages and answers are shown at their real width. */
+.column {
+  width: 100%;
+  max-width: var(--column-max);
+}
+
+.scrimStage {
+  display: grid;
+  place-items: center;
+  padding: var(--space-7) var(--space-4);
+  border-radius: var(--radius-16);
+  background: linear-gradient(var(--scrim), var(--scrim)), var(--bg);
+}

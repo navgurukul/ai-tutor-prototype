@@ -1,0 +1,44 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--size-48);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-16);
+}
+
+.banner > svg {
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+.message {
+  flex: 1;
+  min-width: 0;
+}
+
+.action {
+  flex: none;
+  margin-left: var(--space-2);
+  background: var(--white);
+}
+
+.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.info {
+  background: var(--info-bg);
+  color: var(--info-text);
+}

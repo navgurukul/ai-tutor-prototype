@@ -1,0 +1,37 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: calc(var(--size-112) * 3);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-bottom: var(--border-3) solid var(--pink);
+  border-radius: var(--radius-8) var(--radius-8) 0 0;
+  background: none;
+  color: var(--purple);
+  font-family: var(--font-heading);
+  font-size: var(--h3-size);
+  line-height: var(--h3-line);
+  font-weight: var(--weight-heavy);
+  text-align: center;
+}
+
+/* Keeps its line even when empty, so the screen doesn't jump. */
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--caption-line);
+  color: var(--error-text);
+}
+
+.error svg {
+  width: var(--icon-16);
+  height: var(--icon-16);
+}

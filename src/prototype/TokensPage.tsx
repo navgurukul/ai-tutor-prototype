@@ -1,5 +1,6 @@
 import { CircleCheck, CircleX, Info, Mic, TriangleAlert } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
+import { Chip } from '../components/Chip.tsx'
 import PageShell from './PageShell.tsx'
 import {
   borders,
@@ -142,9 +143,9 @@ export default function TokensPage() {
         <Coverage />
         <nav className={styles.jump} aria-label="Jump to a section">
           {sections.map((section) => (
-            <button key={section.id} type="button" className={styles.jumpChip} onClick={() => jumpTo(section.id)}>
+            <Chip key={section.id} onClick={() => jumpTo(section.id)}>
               {section.label}
-            </button>
+            </Chip>
           ))}
         </nav>
       </div>

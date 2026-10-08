@@ -1,0 +1,47 @@
+.button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size-40);
+  height: var(--size-40);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: none;
+  color: var(--gray-900);
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.button svg {
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--gray-100);
+}
+
+.button:active:not(:disabled) {
+  background: var(--gray-200);
+  transform: scale(0.94);
+}
+
+.button:disabled {
+  color: var(--gray-400);
+}
+
+/* Filled: the Send button once there is something to send. */
+.filled {
+  background: var(--purple);
+  color: var(--white);
+}
+
+.filled:hover:not(:disabled),
+.filled:active:not(:disabled) {
+  background: var(--purple-dark);
+}
+
+.filled:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+}

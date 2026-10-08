@@ -1,0 +1,40 @@
+/* No shadows: these sit in a long scrolling list. */
+.row {
+  display: flex;
+  align-items: center;
+  flex: none;
+  width: 100%;
+  height: var(--size-40);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-8);
+  background: none;
+  color: var(--gray-900);
+  font-family: var(--font-text);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--weight-medium);
+  text-align: left;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.row:hover {
+  background: var(--gray-100);
+}
+
+.row:active {
+  background: var(--gray-200);
+}
+
+.active,
+.active:hover,
+.active:active {
+  background: var(--lilac);
+  color: var(--purple-dark);
+  font-weight: var(--weight-bold);
+}

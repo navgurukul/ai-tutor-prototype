@@ -1,0 +1,39 @@
+.answer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: var(--answer-max);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--gray-900);
+}
+
+/* A little more air above a heading than under it. */
+.body > :is(h3, h4):not(:first-child) {
+  margin-top: var(--space-2);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+  list-style: disc;
+}
+
+/* Key terms: a pink bottom border, not an underline. */
+.term {
+  border-bottom: var(--border-3) solid var(--pink);
+  font-weight: var(--weight-medium);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}

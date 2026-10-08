@@ -1,0 +1,51 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--scrim);
+  animation: fade var(--motion);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: calc(var(--size-112) * 4);
+  padding: var(--space-5);
+  border-radius: var(--radius-24);
+  background: var(--white);
+  box-shadow: var(--elevation-4);
+}
+
+.scrim > .panel {
+  animation: rise var(--motion);
+}
+
+.body {
+  color: var(--gray-700);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}

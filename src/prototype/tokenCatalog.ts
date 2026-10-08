@@ -143,6 +143,7 @@ export const iconExtras: TokenItem[] = [{ name: 'icon-stroke', use: 'Outline str
 
 export const motion: TokenItem[] = [
   { name: 'motion', use: 'Every UI transition. Animates transform and opacity only' },
+  { name: 'motion-pulse', use: 'One loop of the mic rings and the current thinking step. Not in the tokens file' },
 ]
 
 export const sizes: TokenItem[] = [

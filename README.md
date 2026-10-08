@@ -32,7 +32,7 @@ Then open the address Vite prints, usually http://localhost:5173.
 | The four flow boards | `docs/flows/` |
 | Screenshots of the earlier POC and other apps, for context only | `docs/reference/`, kept out of the repo on purpose |
 
-In the running prototype, the dark bar at the top links to the same material: **Flows** shows the four boards, **Tokens** shows every token with its name and value, and **Components** will show every component in every state.
+In the running prototype, the dark bar at the top links to the same material: **Flows** shows the four boards, **Tokens** shows every token with its name and value, and **Components** shows every component in every state, with hover, pressed and focus pinned so they can be seen without a mouse.
 
 ## Rules for the code
 
@@ -40,6 +40,7 @@ In the running prototype, the dark bar at the top links to the same material: **
 - All tokens live on `:root` in that one file. The Tokens page and Inspect mode read them from there.
 - No requests at runtime. Fonts and icons are bundled.
 - `src/prototype/` and `src/inspect/` are prototype tools. Nothing in them should be copied into the real Electron app.
+- Icons are sized in CSS with the `--icon-*` tokens, not with a `size` prop, and keep a 2 px stroke at every size.
 - The app name lives in one constant, `APP_NAME`, in `src/config.ts`.
 
 ## Deployment
@@ -53,7 +54,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | Phase | Status |
 | --- | --- |
 | 0 · Setup | Built |
-| 1 to 8 | Not started |
+| 1 · Components | Built |
+| 2 to 8 | Not started |
 
 ## Fonts
 

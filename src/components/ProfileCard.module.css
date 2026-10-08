@@ -1,0 +1,55 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: none;
+  width: var(--profile-card-width);
+  height: var(--profile-card-height);
+  padding: var(--space-3);
+  border-radius: var(--radius-16);
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.card:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.profile {
+  border: var(--border-1) solid var(--gray-200);
+  background: var(--white);
+  box-shadow: var(--elevation-1);
+}
+
+.profile:hover:not(:disabled) {
+  box-shadow: var(--elevation-2);
+  transform: translateY(calc(var(--space-1) * -1));
+}
+
+/* Names can run to 20 characters: two lines, then cut. */
+.name {
+  display: -webkit-box;
+  overflow: hidden;
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.add {
+  border: var(--border-2) dashed var(--gray-300);
+  background: none;
+  color: var(--gray-700);
+}
+
+.add svg {
+  width: var(--icon-32);
+  height: var(--icon-32);
+}
+
+.add:hover:not(:disabled) {
+  border-color: var(--gray-500);
+  background: var(--white);
+}

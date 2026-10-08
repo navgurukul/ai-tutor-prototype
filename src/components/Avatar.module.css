@@ -1,0 +1,40 @@
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: var(--radius-circle);
+  line-height: 1;
+}
+
+.lg {
+  width: var(--size-96);
+  height: var(--size-96);
+  font-size: var(--size-48);
+}
+
+.sm {
+  width: var(--size-40);
+  height: var(--size-40);
+  font-size: var(--icon-24);
+}
+
+.option {
+  padding: 0;
+  border: var(--border-2) solid transparent;
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--gray-300);
+  transform: scale(1.04);
+}
+
+.option:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.selected,
+.selected:hover:not(:disabled) {
+  border-color: var(--purple);
+  background: var(--lilac);
+}

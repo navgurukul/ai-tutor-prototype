@@ -1,0 +1,27 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  left: 0;
+  z-index: 1;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-8);
+  background: var(--ink);
+  color: var(--white);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(var(--space-1));
+  pointer-events: none;
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.wrap:hover .tooltip,
+.wrap:focus-within .tooltip {
+  opacity: 1;
+  transform: none;
+}

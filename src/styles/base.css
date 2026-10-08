@@ -107,6 +107,16 @@ svg {
   max-width: 100%;
 }
 
+/* Icons: outline style, the same stroke at every size. Components set the size. */
+.lucide {
+  flex: none;
+  stroke-width: var(--icon-stroke);
+}
+
+.lucide * {
+  vector-effect: non-scaling-stroke;
+}
+
 /* Focus ring: on every focusable element, keyboard focus only. */
 :focus {
   outline: none;
