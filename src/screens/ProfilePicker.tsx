@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AddProfileCard, ProfileCard } from '../components/ProfileCard.tsx'
 import { animalOf } from '../data/animals.ts'
@@ -10,12 +9,6 @@ import screen from './Screen.module.css'
 export default function ProfilePicker() {
   const { state, dispatch } = useStore()
   const navigate = useNavigate()
-
-  // Being on the picker means nobody is signed in.
-  const entered = state.activeProfileId !== null
-  useEffect(() => {
-    if (entered) dispatch({ type: 'profile/enter', profileId: null })
-  }, [entered, dispatch])
 
   function enter(profileId: string) {
     dispatch({ type: 'profile/enter', profileId })

@@ -1,16 +1,29 @@
-.greeting {
+.chat {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  text-align: center;
+  flex: 1;
+  min-height: 0;
 }
 
-.note {
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The voice control sits top right. Below 1024 the button that opens the
+   sidebar sits top left. */
+.top {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--space-3);
-  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
-  border: var(--border-1) dashed var(--gray-300);
-  border-radius: var(--radius-pill);
-  color: var(--gray-500);
+  flex: none;
+  padding: var(--space-3) var(--space-5) 0;
+}
+
+.menu {
+  margin-right: auto;
+  background: var(--white);
 }

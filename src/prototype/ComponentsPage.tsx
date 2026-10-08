@@ -6,6 +6,7 @@ import Card from '../components/Card.tsx'
 import { Chip, ClassChip } from '../components/Chip.tsx'
 import Composer from '../components/Composer.tsx'
 import Dialog, { DialogPanel } from '../components/Dialog.tsx'
+import Drawer from '../components/Drawer.tsx'
 import HistoryRow from '../components/HistoryRow.tsx'
 import IconButton from '../components/IconButton.tsx'
 import Input from '../components/Input.tsx'
@@ -18,6 +19,7 @@ import SourceChip from '../components/SourceChip.tsx'
 import StatusBanner from '../components/StatusBanner.tsx'
 import ThinkingSteps from '../components/ThinkingSteps.tsx'
 import TutorAnswer from '../components/TutorAnswer.tsx'
+import VoiceControl from '../components/VoiceControl.tsx'
 import { animals } from '../data/animals.ts'
 import PageShell from './PageShell.tsx'
 import { enablePseudoStates } from './pseudoStates.ts'
@@ -36,6 +38,7 @@ const sections = [
   { id: 'sidebar', label: 'Sidebar' },
   { id: 'messages', label: 'Messages' },
   { id: 'composer', label: 'Composer' },
+  { id: 'voice', label: 'Voice control' },
   { id: 'thinking', label: 'Thinking steps' },
   { id: 'status', label: 'Status banner' },
   { id: 'dialog', label: 'Dialog' },
@@ -160,6 +163,34 @@ function AnimalGridDemo() {
         <AvatarOption key={animal.id} animal={animal} selected={picked === animal.id} onClick={() => setPicked(animal.id)} />
       ))}
     </div>
+  )
+}
+
+function VoiceDemo(props: { voiceOn: boolean; speed: 'normal' | 'slow'; live?: boolean }) {
+  const [voiceOn, setVoiceOn] = useState(props.voiceOn)
+  const [speed, setSpeed] = useState(props.speed)
+  if (!props.live) return <VoiceControl voiceOn={props.voiceOn} speed={props.speed} onVoice={() => {}} onSpeed={() => {}} />
+  return <VoiceControl voiceOn={voiceOn} speed={speed} onVoice={setVoiceOn} onSpeed={setSpeed} />
+}
+
+function DrawerDemo() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open the drawer
+      </Button>
+      <Drawer open={open} onClose={() => setOpen(false)} label="Chats and profile">
+        <Sidebar
+          profile={{ name: 'Brave Owl', animal: owl }}
+          chats={sampleChats}
+          activeChatId="1"
+          onNewChat={() => setOpen(false)}
+          onOpenChat={() => setOpen(false)}
+          onSwitch={() => setOpen(false)}
+        />
+      </Drawer>
+    </>
   )
 }
 
@@ -572,6 +603,12 @@ export default function ComponentsPage() {
             </div>
           </State>
         </Specimen>
+
+        <Specimen name="Drawer" spec="Not in the tokens file. The full sidebar over the chat, from the rail or below 1024: scrim behind · elevation-4 · Esc or a click outside closes it">
+          <State label="Live">
+            <DrawerDemo />
+          </State>
+        </Specimen>
       </Section>
 
       <Section id="messages" title="Messages">
@@ -637,6 +674,26 @@ export default function ComponentsPage() {
           </State>
           <State label="While an answer is being worked on" wide>
             <ComposerDemo text="And which one is the biggest?" busy />
+          </State>
+        </Specimen>
+      </Section>
+
+      <Section id="voice" title="Voice control">
+        <Specimen name="Voice control" spec="Not in the tokens file. Ghost button with a white fill, then a speed choice: height 40 · radius-pill · border-1 gray-300 · text-sm 700 · selected lilac with purple-dark text">
+          <State label="Voice on, normal">
+            <VoiceDemo voiceOn speed="normal" />
+          </State>
+          <State label="Voice off, slow">
+            <VoiceDemo voiceOn={false} speed="slow" />
+          </State>
+          <State label="Speed, hover" force="hover" target="[aria-pressed=false]">
+            <VoiceDemo voiceOn speed="normal" />
+          </State>
+          <State label="Speed, focus" force="focus" target="[aria-pressed=false]">
+            <VoiceDemo voiceOn speed="normal" />
+          </State>
+          <State label="Live">
+            <VoiceDemo voiceOn speed="normal" live />
           </State>
         </Specimen>
       </Section>

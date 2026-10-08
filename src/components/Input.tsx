@@ -1,7 +1,7 @@
-import type { InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 import styles from './Input.module.css'
 
-type Props = InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }
+type Props = InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean; ref?: Ref<HTMLInputElement> }
 
 export default function Input({ invalid, className, type = 'text', ...rest }: Props) {
   return (

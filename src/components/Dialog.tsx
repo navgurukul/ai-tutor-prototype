@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useId, useRef, type ReactNode } from 'react'
 import styles from './Dialog.module.css'
+import { useModal } from './useModal.ts'
 
 type PanelProps = {
   title: string
@@ -24,44 +25,10 @@ export function DialogPanel({ title, children, actions, titleId }: PanelProps) {
 
 type Props = PanelProps & { open: boolean; onClose: () => void }
 
-const focusable = 'button:not(:disabled), [href], input:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
-
 export default function Dialog({ open, onClose, ...panel }: Props) {
   const titleId = useId()
   const scrim = useRef<HTMLDivElement>(null)
-
-  // Move focus in, keep Tab inside, close on Esc, and hand focus back after.
-  useEffect(() => {
-    if (!open) return
-    const before = document.activeElement as HTMLElement | null
-    const items = () => Array.from(scrim.current?.querySelectorAll<HTMLElement>(focusable) ?? [])
-    items().at(-1)?.focus()
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.stopPropagation()
-        onClose()
-        return
-      }
-      if (event.key !== 'Tab') return
-      const list = items()
-      const first = list[0]
-      const last = list.at(-1)
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last?.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first?.focus()
-      }
-    }
-
-    document.addEventListener('keydown', onKeyDown, true)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown, true)
-      before?.focus()
-    }
-  }, [open, onClose])
+  useModal(scrim, open, onClose)
 
   if (!open) return null
   return (

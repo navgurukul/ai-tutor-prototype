@@ -27,8 +27,8 @@
 /*
  * The app frame is a container named "app". Layout breakpoints must use
  * @container app (...), not @media, so a fixed frame size behaves like a
- * window of that size. Its containment also keeps position: fixed children,
- * such as a dialog's scrim, inside the frame.
+ * window of that size. Layout containment keeps position: fixed children,
+ * such as a dialog's scrim or the sidebar drawer, inside the frame.
  */
 .frame {
   position: relative;
@@ -37,6 +37,7 @@
   overflow: hidden;
   background: var(--bg);
   container: app / inline-size;
+  contain: layout;
 }
 
 .frameFixed {

@@ -25,7 +25,9 @@ export default function ScreenLayout() {
           </StatusBanner>
         </div>
       )}
-      <Outlet />
+      <div className={styles.screen}>
+        <Outlet />
+      </div>
     </div>
   )
 }

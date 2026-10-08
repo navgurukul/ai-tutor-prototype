@@ -56,14 +56,17 @@ The panel shows size, box model, layout, type, colour, shape and contrast. Every
 
 ## What works so far
 
-The app opens on the launch flow from flow board 1.
+The app opens on the launch flow from flow board 1, then the chat from board 2.
 
-- **First launch:** Welcome, then three profile steps (animal, name, class), then the chat.
+- **First launch:** Welcome, then three profile steps (animal, name, class), then an empty chat.
 - **Every launch after that:** the profile picker. Reloading the page counts as a new launch.
 - **Names:** a made-up name like "Brave Owl" is offered, and two profiles on one laptop can never have the same name.
 - **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and press "Check again" to clear it.
+- **Asking:** a question can be sent by voice, by a suggestion chip, or by typing. Tap the mic to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text field instead.
+- **Fake mic:** switch on **Scenarios → Fake mic** to have a sample question typed out instead of using the microphone. The real microphone needs Chrome or Edge, internet, and permission.
+- **Sidebar:** full at 1200 px and wider, an icon rail from 1024 to 1199 px, and a drawer below 1024 px. Use **Frame** in the dark bar, or resize the window, to see each.
 
-The chat is a stand-in until Phase 5. To see the first launch again, use **Scenarios → Reset prototype**.
+The tutor does not answer yet: that is Phase 6. To see the first launch again, use **Scenarios → Reset prototype**.
 
 ## Simulated services and scenarios
 
@@ -116,7 +119,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 2 · Inspect | Built |
 | 3 · Services | Built |
 | 4 · Launch and profiles | Built |
-| 5 to 8 | Not started |
+| 5 · Asking | Built |
+| 6 to 8 | Not started |
 
 ## Fonts
 

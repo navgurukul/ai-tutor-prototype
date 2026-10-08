@@ -1,0 +1,26 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  background: var(--scrim);
+  animation: fade var(--motion);
+}
+
+.panel {
+  height: 100%;
+  box-shadow: var(--elevation-4);
+  animation: slide var(--motion);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(-100%);
+  }
+}

@@ -1,5 +1,5 @@
 import { ArrowUp } from 'lucide-react'
-import type { FormEvent, KeyboardEvent } from 'react'
+import type { FormEvent, KeyboardEvent, Ref } from 'react'
 import Button from './Button.tsx'
 import IconButton from './IconButton.tsx'
 import MicButton from './MicButton.tsx'
@@ -18,9 +18,11 @@ type Props = {
   busy?: boolean
   // A short line under the field, e.g. "I didn't catch that. Try again."
   hint?: string
+  // The text field, so a screen can move focus to it.
+  inputRef?: Ref<HTMLTextAreaElement>
 }
 
-export default function Composer({ value, onChange, onSend, onMic, onCancel, listening = false, transcript = '', busy = false, hint }: Props) {
+export default function Composer({ value, onChange, onSend, onMic, onCancel, listening = false, transcript = '', busy = false, hint, inputRef }: Props) {
   const canSend = !busy && value.trim() !== ''
 
   function submit(event: FormEvent) {
@@ -50,6 +52,7 @@ export default function Composer({ value, onChange, onSend, onMic, onCancel, lis
           <>
             <textarea
               className={styles.input}
+              ref={inputRef}
               rows={1}
               value={value}
               onChange={(event) => onChange(event.target.value)}

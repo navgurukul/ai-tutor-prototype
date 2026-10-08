@@ -1,0 +1,49 @@
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* On the app background a ghost button needs a fill to read as a control. */
+.voice {
+  background: var(--white);
+}
+
+.speeds {
+  display: flex;
+  gap: var(--space-1);
+  height: var(--size-40);
+  padding: var(--space-1);
+  border: var(--border-1) solid var(--gray-300);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+}
+
+.speed {
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--gray-700);
+  font-family: var(--font-text);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--weight-bold);
+  transition: transform var(--motion), opacity var(--motion);
+}
+
+.speed:hover {
+  background: var(--gray-100);
+}
+
+.speed:active {
+  background: var(--gray-200);
+  transform: scale(0.97);
+}
+
+.selected,
+.selected:hover,
+.selected:active {
+  background: var(--lilac);
+  color: var(--purple-dark);
+}
