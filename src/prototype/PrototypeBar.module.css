@@ -1,5 +1,7 @@
 /* In ink with white text, so nobody mistakes it for product UI. */
 .bar {
+  position: relative;
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -62,7 +64,8 @@
 }
 
 /* The purple ring is too dark to see on ink, so the bar's ring is white. */
-.bar :focus-visible {
+.bar > :focus-visible,
+.tools :focus-visible {
   outline-color: var(--white);
 }
 

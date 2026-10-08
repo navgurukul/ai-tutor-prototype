@@ -51,6 +51,32 @@ The panel shows size, box model, layout, type, colour, shape and contrast. Every
 
 **Frame** in the bar draws the app at a fixed size (1366 × 768, 1280 × 720, 1920 × 1080 or 1024 × 640) at true pixels. A frame bigger than the window scrolls.
 
+## Simulated services and scenarios
+
+Nothing real runs behind the prototype. Each real system is faked by one file in `src/services/`, with the interface the real app will have, so swapping in the real thing later touches one file.
+
+| File | Stands in for | What it does here |
+| --- | --- | --- |
+| `model.ts` | The model, loaded through Ollama | A 5.5 s load, then answers picked by keyword from `src/data/answers.ts` |
+| `memory.ts` | The free-memory check | Reports low only when the scenario says so |
+| `retrieval.ts` | Search in the class's textbooks | Keyword match against `src/data/textbooks.ts`, inside one class only |
+| `speech.ts` | Local speech-to-text and the tutor's voice | The browser's speech recognition and speech synthesis |
+| `titles.ts` | The model writing a chat title | The matched topic's title, after 1.5 s, and it can be cancelled |
+| `scenarios.ts` | Nothing: prototype only | The switches below, and the timing every service waits on |
+
+Timings copy an 8 GB laptop and vary by 20% either way. Speech recognition in Chrome and Edge needs internet; when it isn't available, a sample question is typed out word by word.
+
+**Scenarios** in the dark bar forces the hard paths: Slow laptop, Memory low, Next search finds nothing, Next answer fails, Fake mic, Short idle timer, Cold model and Reset prototype. Choices are saved in `localStorage`.
+
+**Services** in the dark bar is a temporary test bench that calls each service and logs the result. It will be removed once the real screens use the services.
+
+Profiles, chats and settings live in a React context with a reducer (`src/state/`) and are saved to `localStorage`.
+
+### Content still to check
+
+- The chapter names in `textbooks.ts` are the real ones from the current NCERT books, but the **page ranges and page numbers are placeholders** and have not been checked against the printed books.
+- The answers in `answers.ts` have been fact-checked, but not against the textbooks' own wording.
+
 ## Rules for the code
 
 - Every visual value comes from `src/styles/tokens.css`. Component CSS uses only `var(--…)`. A raw hex or px value in a component file is a bug.
@@ -74,7 +100,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 0 · Setup | Built |
 | 1 · Components | Built |
 | 2 · Inspect | Built |
-| 3 to 8 | Not started |
+| 3 · Services | Built |
+| 4 to 8 | Not started |
 
 ## Fonts
 
