@@ -72,3 +72,32 @@
   margin: 0 var(--space-1);
   background: var(--white-20);
 }
+
+/* Inspect is on: the bar says so in white, the one loud thing on it. */
+.on,
+.on:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--ink);
+  font-weight: var(--weight-bold);
+}
+
+.frame {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--white-90);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--weight-medium);
+}
+
+.select {
+  height: var(--size-32);
+  padding: 0 var(--space-2);
+  border: var(--border-1) solid var(--white-20);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--white);
+  font-weight: var(--weight-medium);
+  color-scheme: dark;
+}

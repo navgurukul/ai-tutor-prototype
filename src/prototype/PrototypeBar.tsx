@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { APP_NAME, PROTOTYPE_VERSION } from '../config.ts'
+import { useInspect } from '../inspect/inspectContext.ts'
+import FrameSizer from './FrameSizer.tsx'
 import styles from './PrototypeBar.module.css'
 
 const pages = [
@@ -8,8 +10,11 @@ const pages = [
   { to: '/prototype/components', label: 'Components' },
 ]
 
+type Props = { frameId: string; onFrame: (id: string) => void }
+
 // Prototype tooling only: none of this ships in the real app.
-export default function PrototypeBar() {
+export default function PrototypeBar({ frameId, onFrame }: Props) {
+  const inspect = useInspect()
   return (
     <header className={styles.bar} data-inspector-ui>
       <NavLink to="/" className={styles.title}>
@@ -18,13 +23,17 @@ export default function PrototypeBar() {
       <span className={styles.version}>{PROTOTYPE_VERSION}</span>
 
       <nav className={styles.tools} aria-label="Prototype tools">
-        {/* Frame and Inspect arrive in Phase 2, Scenarios in Phase 3. */}
-        <button type="button" className={styles.item} disabled title="Arrives in Phase 2">
-          Frame: Fit window
+        <FrameSizer frameId={frameId} onChange={onFrame} />
+        <button
+          type="button"
+          className={inspect.enabled ? `${styles.item} ${styles.on}` : styles.item}
+          aria-pressed={inspect.enabled}
+          title="Alt + I"
+          onClick={() => inspect.setEnabled(!inspect.enabled)}
+        >
+          Inspect{inspect.enabled ? ': on' : ''}
         </button>
-        <button type="button" className={styles.item} disabled title="Arrives in Phase 2">
-          Inspect
-        </button>
+        {/* Scenarios arrive in Phase 3. */}
         <button type="button" className={styles.item} disabled title="Arrives in Phase 3">
           Scenarios
         </button>

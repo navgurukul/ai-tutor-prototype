@@ -1,0 +1,273 @@
+/* Inspector colours are deliberately outside the palette, so the tool can
+   never be mistaken for product UI. They are not tokens. */
+.overlay {
+  --inspect-blue: #0D99FF;
+  --inspect-red: #F24822;
+
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: var(--font-text);
+  font-size: var(--caption-size);
+  line-height: var(--caption-line);
+  font-weight: var(--weight-bold);
+}
+
+.outline {
+  position: absolute;
+  outline: var(--border-1) solid var(--inspect-blue);
+}
+
+.pinned {
+  outline-width: var(--border-2);
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 var(--space-1);
+  background: var(--inspect-blue);
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.badgeAbove {
+  top: auto;
+  bottom: 100%;
+}
+
+.badgeBelow {
+  top: 100%;
+}
+
+.segment {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.across {
+  border-top: var(--border-1) solid var(--inspect-red);
+}
+
+.down {
+  border-left: var(--border-1) solid var(--inspect-red);
+}
+
+.distance {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-8);
+  background: var(--inspect-red);
+  color: var(--white);
+}
+
+.across .distance {
+  transform: translateY(-50%);
+}
+
+.down .distance {
+  transform: translateX(-50%);
+}
+
+/* Panel */
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: calc(var(--size-64) * 5);
+  border-left: var(--border-1) solid var(--gray-200);
+  background: var(--white);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  border-bottom: var(--border-1) solid var(--gray-200);
+}
+
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-3);
+  overflow-y: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-1) solid var(--gray-200);
+}
+
+.groupTitle {
+  color: var(--gray-500);
+}
+
+.note {
+  color: var(--gray-500);
+}
+
+.quote {
+  color: var(--gray-700);
+  overflow-wrap: anywhere;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: calc(var(--size-96) + var(--space-1)) minmax(0, 1fr);
+  gap: var(--space-2);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
+.term {
+  color: var(--gray-500);
+  font-weight: var(--weight-medium);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  color: var(--gray-900);
+  font-weight: var(--weight-medium);
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  color: var(--gray-700);
+}
+
+.value {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.token {
+  color: var(--purple-dark);
+  font-weight: var(--weight-bold);
+}
+
+.missing {
+  color: var(--warning-text);
+  font-weight: var(--weight-bold);
+}
+
+.value svg {
+  width: var(--icon-16);
+  height: var(--icon-16);
+  margin-top: var(--border-2);
+}
+
+.swatch {
+  flex: none;
+  width: var(--icon-16);
+  height: var(--icon-16);
+  margin-top: var(--border-2);
+  border: var(--border-1) solid var(--gray-300);
+  border-radius: var(--radius-circle);
+}
+
+/* Box model diagram */
+.ring {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--space-5) minmax(0, 1fr) var(--space-5);
+  grid-template-rows: var(--space-4) auto var(--space-4);
+  align-items: center;
+  justify-items: center;
+  border: var(--border-1) solid var(--gray-300);
+  color: var(--gray-900);
+  font-size: var(--caption-size);
+  line-height: var(--caption-line);
+  font-weight: var(--weight-medium);
+}
+
+.ring > .ring,
+.content {
+  grid-area: 2 / 2;
+  width: 100%;
+}
+
+.ringTop {
+  grid-area: 1 / 2;
+}
+
+.ringLeft {
+  grid-area: 2 / 1;
+}
+
+.ringRight {
+  grid-area: 2 / 3;
+}
+
+.ringBottom {
+  grid-area: 3 / 2;
+}
+
+.ringLabel {
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  color: var(--gray-500);
+}
+
+.ringMargin {
+  border-style: dashed;
+  background: var(--orange-wash);
+}
+
+.ringBorder {
+  background: var(--gray-100);
+}
+
+.ringPadding {
+  background: var(--green-wash);
+}
+
+.content {
+  padding: var(--space-2) var(--space-1);
+  border: var(--border-1) solid var(--gray-300);
+  background: var(--blue-wash);
+  text-align: center;
+}
+
+/* Contrast */
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--weight-bold);
+}
+
+.verdict svg {
+  width: var(--icon-20);
+  height: var(--icon-20);
+}
+
+.pass {
+  color: var(--success-text);
+}
+
+.fail {
+  color: var(--error-text);
+}

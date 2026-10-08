@@ -39,6 +39,7 @@ const sections = [
   { id: 'thinking', label: 'Thinking steps' },
   { id: 'status', label: 'Status banner' },
   { id: 'dialog', label: 'Dialog' },
+  { id: 'inspect-test', label: 'Inspect test' },
 ]
 
 const [lion, , , panda, , , owl, , dolphin, butterfly] = animals
@@ -693,6 +694,7 @@ export default function ComponentsPage() {
         <Specimen name="Dialog" spec="radius-24 · white · padding 32 · elevation-4 · scrim behind" stack>
           <State label="On the scrim" wide>
             <div className={styles.scrimStage}>
+             <div className={styles.scrimFill}>
               <DialogPanel
                 title="Start again?"
                 actions={
@@ -704,10 +706,25 @@ export default function ComponentsPage() {
               >
                 This clears every profile and chat on this laptop.
               </DialogPanel>
+             </div>
             </div>
           </State>
           <State label="Live">
             <DialogDemo />
+          </State>
+        </Specimen>
+      </Section>
+
+      <Section id="inspect-test" title="Inspect test">
+        <Specimen
+          name="Off-system box"
+          spec="Wrong on purpose. Turn Inspect on and click the box: its colour, padding, radius and type size should each show “not a token”."
+        >
+          <State label="Hard-coded values">
+            {/* The only raw values in the app, here to prove Inspect catches them. */}
+            <p style={{ padding: 13, borderRadius: 5, background: '#FFD9F0', color: '#5A0B3C', fontSize: 15 }}>
+              Padding 13, radius 5, pink #FFD9F0, text 15
+            </p>
           </State>
         </Specimen>
       </Section>

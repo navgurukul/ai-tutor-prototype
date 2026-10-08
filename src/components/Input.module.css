@@ -21,11 +21,12 @@
   border-color: var(--gray-500);
 }
 
-/* The thicker border eats into the padding, so the text doesn't shift. */
+/* The border thickens by one step, so the text is pulled back by the same
+   amount and doesn't shift. */
 .input:focus,
 .input[aria-invalid='true'] {
-  padding: 0 calc(var(--space-3) - var(--border-1));
   border-width: var(--border-2);
+  text-indent: calc(var(--border-1) * -1);
   border-color: var(--purple);
 }
 

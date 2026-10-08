@@ -4,10 +4,53 @@
   height: 100%;
 }
 
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The stage holds the app frame. With a fixed frame size it scrolls when the
+   frame is bigger than the window, and centres it when it is smaller. */
+.stage {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+
+.stageFixed {
+  padding: var(--space-4);
+  background: var(--ink-tint);
+}
+
+/*
+ * The app frame is a container named "app". Layout breakpoints must use
+ * @container app (...), not @media, so a fixed frame size behaves like a
+ * window of that size. Its containment also keeps position: fixed children,
+ * such as a dialog's scrim, inside the frame.
+ */
 .frame {
   position: relative;
   flex: 1;
-  min-height: 0;
-  overflow: auto;
+  min-width: 0;
+  overflow: hidden;
   background: var(--bg);
+  container: app / inline-size;
+}
+
+.frameFixed {
+  flex: none;
+  margin: auto;
+  box-shadow: var(--elevation-3);
+}
+
+.frame[data-inspecting],
+.frame[data-inspecting] * {
+  cursor: crosshair;
+}
+
+.scroller {
+  height: 100%;
+  overflow: auto;
 }

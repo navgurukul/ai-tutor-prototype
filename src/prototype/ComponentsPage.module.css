@@ -119,10 +119,16 @@
   max-width: var(--column-max);
 }
 
+/* The scrim, laid over the app background as it is in the app. */
 .scrimStage {
+  overflow: hidden;
+  border-radius: var(--radius-16);
+  background: var(--bg);
+}
+
+.scrimFill {
   display: grid;
   place-items: center;
   padding: var(--space-7) var(--space-4);
-  border-radius: var(--radius-16);
-  background: linear-gradient(var(--scrim), var(--scrim)), var(--bg);
+  background: var(--scrim);
 }
