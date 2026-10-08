@@ -5,7 +5,11 @@ export const adjectives = [
   'Jolly', 'Lucky', 'Sunny', 'Merry', 'Wise', 'Eager', 'Friendly', 'Cheerful', 'Mighty', 'Swift',
 ]
 
-export const sameName = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase()
+// A name as it is saved: no spaces at the ends, one space between words.
+export const cleanName = (name: string) => name.trim().replace(/\s+/g, ' ')
+
+// Two names are the same whatever their capitals and spacing.
+export const sameName = (a: string, b: string) => cleanName(a).toLowerCase() === cleanName(b).toLowerCase()
 
 // An adjective plus the chosen animal that no profile on this laptop has yet.
 // `not` is the name on screen now, so "Surprise me" always changes it.

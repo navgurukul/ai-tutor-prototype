@@ -6,7 +6,7 @@ import styles from './StatusBanner.module.css'
 type Props = {
   tone: 'success' | 'warning' | 'error' | 'info'
   children: ReactNode
-  action?: { label: string; onClick: () => void }
+  action?: { label: string; onClick: () => void; disabled?: boolean }
 }
 
 const icons = { success: CircleCheck, warning: TriangleAlert, error: CircleX, info: Info }
@@ -19,7 +19,7 @@ export default function StatusBanner({ tone, children, action }: Props) {
       <Icon aria-hidden="true" />
       <p className={`text weight-medium ${styles.message}`}>{children}</p>
       {action && (
-        <Button variant="ghost" className={styles.action} onClick={action.onClick}>
+        <Button variant="ghost" className={styles.action} onClick={action.onClick} disabled={action.disabled}>
           {action.label}
         </Button>
       )}

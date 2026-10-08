@@ -1,0 +1,72 @@
+.card {
+  width: 100%;
+  max-width: var(--column-max);
+  box-shadow: var(--elevation-1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-3);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.step {
+  color: var(--gray-500);
+}
+
+.intro {
+  margin-top: var(--space-1);
+  color: var(--gray-700);
+}
+
+/* The same height on every step, so Back and Next stay where they are. */
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: calc(var(--size-48) * 5);
+  animation: appear var(--motion);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-2));
+  }
+}
+
+.animals {
+  display: grid;
+  grid-template-columns: repeat(5, var(--size-96));
+  gap: var(--space-3);
+}
+
+.classes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  /* Four chips, then three: an even split of the seven classes. */
+  max-width: calc(var(--size-112) * 4);
+}
+
+.helper {
+  color: var(--gray-500);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}

@@ -1,0 +1,36 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: calc(var(--size-112) * 5);
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+  box-shadow: var(--elevation-1);
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tagline {
+  color: var(--gray-700);
+}
+
+.offline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.offline svg {
+  width: var(--icon-16);
+  height: var(--icon-16);
+}

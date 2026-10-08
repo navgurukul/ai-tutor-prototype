@@ -11,7 +11,20 @@ import PrototypeBar from './prototype/PrototypeBar.tsx'
 import ServicesPage from './prototype/ServicesPage.tsx'
 import TokensPage from './prototype/TokensPage.tsx'
 import { useStored } from './prototype/useStored.ts'
+import Chat from './screens/Chat.tsx'
+import CreateProfile from './screens/CreateProfile.tsx'
+import ProfilePicker from './screens/ProfilePicker.tsx'
+import ScreenLayout from './screens/ScreenLayout.tsx'
+import Welcome from './screens/Welcome.tsx'
 import StoreProvider from './state/store.tsx'
+import { useStore } from './state/storeContext.ts'
+
+// A laptop with no profiles is on its first launch. After that, every launch
+// opens the profile picker.
+function Start() {
+  const { state } = useStore()
+  return state.profiles.length === 0 ? <Welcome /> : <ProfilePicker />
+}
 
 function Shell() {
   const [frameId, setFrameId] = useStored('frame', 'fit')
@@ -33,8 +46,11 @@ function Shell() {
           >
             <div className={styles.scroller}>
               <Routes>
-                {/* Product screens arrive in Phase 4. Until then the app opens on Tokens. */}
-                <Route path="/" element={<Navigate to="/prototype/tokens" replace />} />
+                <Route element={<ScreenLayout />}>
+                  <Route path="/" element={<Start />} />
+                  <Route path="/new-profile" element={<CreateProfile />} />
+                  <Route path="/chat" element={<Chat />} />
+                </Route>
                 <Route path="/prototype/tokens" element={<TokensPage />} />
                 <Route path="/prototype/flows" element={<FlowsPage />} />
                 <Route path="/prototype/components" element={<ComponentsPage />} />

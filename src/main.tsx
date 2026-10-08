@@ -10,6 +10,10 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/type.css'
 import App from './App.tsx'
+import { launch } from './state/launch.ts'
+
+// The model load and the memory check start here, before any screen renders.
+launch()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

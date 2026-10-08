@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, type ReactNode } from 'react'
 import { memory } from '../services/memory.ts'
 import { model } from '../services/model.ts'
+import { launchMemoryCheck } from './launch.ts'
 import { loadSaved, saveData } from './storage.ts'
 import { StoreContext } from './storeContext.ts'
 import type { AppState, Chat, Message, ModelStatus, Profile, Settings } from './types.ts'
@@ -56,13 +57,14 @@ export default function StoreProvider({ children }: { children: ReactNode }) {
     return low
   }, [])
 
-  // Both start the moment the app opens and never block a screen.
+  // The model load and the memory check start at launch, before this renders.
+  // Their results land here whenever they arrive and never block a screen.
   useEffect(() => {
     const stop = model.subscribe((status) => dispatch({ type: 'model/status', status }))
     void model.load()
-    void checkMemory()
+    void launchMemoryCheck().then(({ low }) => dispatch({ type: 'memory/low', low }))
     return stop
-  }, [checkMemory])
+  }, [])
 
   // Profiles, chats and settings survive a relaunch.
   const { profiles, chats, settings } = state

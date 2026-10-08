@@ -1,0 +1,10 @@
+/* A screen with one thing in the middle: Welcome, the profile steps, the picker. */
+.centred {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+}

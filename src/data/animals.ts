@@ -13,3 +13,6 @@ export const animals: Animal[] = [
   { id: 'dolphin', name: 'Dolphin', emoji: '🐬', tint: 'pink-tint' },
   { id: 'butterfly', name: 'Butterfly', emoji: '🦋', tint: 'green-tint' },
 ]
+
+// A saved profile's animal. Falls back to the first if the list ever changes.
+export const animalOf = (id: string): Animal => animals.find((animal) => animal.id === id) ?? animals[0]

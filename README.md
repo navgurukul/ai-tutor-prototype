@@ -30,9 +30,12 @@ Then open the address Vite prints, usually http://localhost:5173.
 | Design tokens, as written by design | `docs/style-tokens.md` |
 | Design tokens, in code | `src/styles/tokens.css` |
 | The four flow boards | `docs/flows/` |
+| The screens a student sees | `src/screens/` |
+| The components those screens are made of | `src/components/` |
+| Prototype tools that never ship: the dark bar, Scenarios, Inspect and the reference pages | `src/prototype/`, `src/inspect/` |
 | Screenshots of the earlier POC and other apps, for context only | `docs/reference/`, kept out of the repo on purpose |
 
-In the running prototype, the dark bar at the top links to the same material: **Flows** shows the four boards, **Tokens** shows every token with its name and value, and **Components** shows every component in every state, with hover, pressed and focus pinned so they can be seen without a mouse.
+In the running prototype, **App** in the dark bar at the top opens the app itself. The other links show the reference material: **Flows** shows the four boards, **Tokens** shows every token with its name and value, and **Components** shows every component in every state, with hover, pressed and focus pinned so they can be seen without a mouse.
 
 ## Inspect mode
 
@@ -50,6 +53,17 @@ Switch **Inspect** on in the dark bar, or press Alt + I. While it is on, clicks 
 The panel shows size, box model, layout, type, colour, shape and contrast. Every value is shown with the token that produces it, like `48 · size-48`. A value that should come from a token but matches none is shown in orange as "not a token". **Copy CSS** copies the element's styles written with `var(--token)` names. The last section of the Components page has a box with hard-coded values to try this on.
 
 **Frame** in the bar draws the app at a fixed size (1366 × 768, 1280 × 720, 1920 × 1080 or 1024 × 640) at true pixels. A frame bigger than the window scrolls.
+
+## What works so far
+
+The app opens on the launch flow from flow board 1.
+
+- **First launch:** Welcome, then three profile steps (animal, name, class), then the chat.
+- **Every launch after that:** the profile picker. Reloading the page counts as a new launch.
+- **Names:** a made-up name like "Brave Owl" is offered, and two profiles on one laptop can never have the same name.
+- **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and press "Check again" to clear it.
+
+The chat is a stand-in until Phase 5. To see the first launch again, use **Scenarios → Reset prototype**.
 
 ## Simulated services and scenarios
 
@@ -101,7 +115,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 1 · Components | Built |
 | 2 · Inspect | Built |
 | 3 · Services | Built |
-| 4 to 8 | Not started |
+| 4 · Launch and profiles | Built |
+| 5 to 8 | Not started |
 
 ## Fonts
 

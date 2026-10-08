@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { APP_NAME, PROTOTYPE_VERSION } from '../config.ts'
 import { useInspect } from '../inspect/inspectContext.ts'
 import FrameSizer from './FrameSizer.tsx'
@@ -23,6 +23,8 @@ export default function PrototypeBar({ frameId, onFrame }: Props) {
   const [scenariosOpen, setScenariosOpen] = useState(false)
   const closeScenarios = useCallback(() => setScenariosOpen(false), [])
   const active = Object.values(useScenarios()).filter(Boolean).length
+  // Every screen the student sees lives outside /prototype.
+  const inApp = !useLocation().pathname.startsWith('/prototype')
   return (
     <header className={styles.bar} data-inspector-ui>
       <NavLink to="/" className={styles.title}>
@@ -51,6 +53,9 @@ export default function PrototypeBar({ frameId, onFrame }: Props) {
           Scenarios{active > 0 ? `: ${active} on` : ''}
         </button>
         <span className={styles.divider} aria-hidden="true" />
+        <NavLink to="/" className={inApp ? `${styles.item} ${styles.active}` : styles.item}>
+          App
+        </NavLink>
         {pages.map((page) => (
           <NavLink
             key={page.to}

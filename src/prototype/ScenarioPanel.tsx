@@ -10,7 +10,7 @@ import styles from './ScenarioPanel.module.css'
 
 const switches: { name: ScenarioName; label: string; effect: string }[] = [
   { name: 'slowLaptop', label: 'Slow laptop', effect: 'Every wait takes 3 times longer.' },
-  { name: 'memoryLow', label: 'Memory low', effect: 'The memory check reports low memory.' },
+  { name: 'memoryLow', label: 'Memory low', effect: 'Shows the warning. Switch it off, then press Check again to clear it.' },
   { name: 'searchFindsNothing', label: 'Next search finds nothing', effect: 'Turns itself off after one search.' },
   { name: 'answerFails', label: 'Next answer fails', effect: 'Turns itself off after one answer.' },
   { name: 'fakeMic', label: 'Fake mic', effect: 'Types out a sample question instead of listening.' },
@@ -44,8 +44,9 @@ export default function ScenarioPanel({ onClose }: { onClose: () => void }) {
 
   function toggle(name: ScenarioName, value: boolean) {
     scenarios.set(name, value)
-    // Show or clear the memory banner on whatever screen is up.
-    if (name === 'memoryLow') void checkMemory()
+    // Switching it on shows the banner on whatever screen is up. Switching it
+    // off is like closing other apps: the banner stays until "Check again".
+    if (name === 'memoryLow' && value) void checkMemory()
   }
 
   function reset() {
