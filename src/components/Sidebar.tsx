@@ -27,10 +27,10 @@ export default function Sidebar({ variant = 'full', profile, chats, activeChatId
   if (variant === 'rail') {
     return (
       <aside className={`${styles.sidebar} ${styles.rail}`} aria-label="Chats and profile" data-inspect="SidebarRail">
-        <IconButton label="Show recent chats" onClick={onExpand}>
+        <IconButton label="Show Recent Chats" onClick={onExpand}>
           <PanelLeftOpen aria-hidden="true" />
         </IconButton>
-        <IconButton label="New chat" onClick={onNewChat}>
+        <IconButton label="New Chat" onClick={onNewChat}>
           <Plus aria-hidden="true" />
         </IconButton>
         <button type="button" className={styles.railSwitch} onClick={onSwitch} aria-label={`Switch profile. You are ${profile.name}`}>
@@ -44,7 +44,7 @@ export default function Sidebar({ variant = 'full', profile, chats, activeChatId
   return (
     <aside className={styles.sidebar} aria-label="Chats and profile" data-inspect="Sidebar">
       <Button variant="outline" block icon={<Plus aria-hidden="true" />} onClick={onNewChat}>
-        New chat
+        New Chat
       </Button>
 
       <nav className={styles.history} aria-labelledby={labelId}>

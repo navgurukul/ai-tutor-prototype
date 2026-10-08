@@ -111,7 +111,7 @@ export default function InspectPanel() {
     <aside className={styles.panel} data-inspector-ui aria-label="Inspect">
       <header className={styles.panelHeader}>
         <h2 className="h6">Inspect</h2>
-        <IconButton label="Turn Inspect off" onClick={() => setEnabled(false)}>
+        <IconButton label="Turn Inspect Off" onClick={() => setEnabled(false)}>
           <X aria-hidden="true" />
         </IconButton>
       </header>

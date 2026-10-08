@@ -6,8 +6,11 @@
   height: 100%;
 }
 
+/* The warning is as wide as its words and sits in the middle. */
 .banner {
+  display: flex;
   flex: none;
+  justify-content: center;
   padding: var(--space-3) var(--space-5) 0;
 }
 

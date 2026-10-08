@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, Ref } from 'react'
 import styles from './MicButton.module.css'
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  size?: 'composer' | 'empty'
+  size?: 'docked' | 'empty'
   listening?: boolean
   // Off while an answer is being worked on. Unlike `disabled`, the mic keeps
   // keyboard focus, so Space works again the moment the answer is in.
@@ -11,8 +11,9 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   ref?: Ref<HTMLButtonElement>
 }
 
-// Tap once to listen, tap again to send. The big one sits on the empty chat.
-export default function MicButton({ size = 'composer', listening = false, busy = false, className, type = 'button', onClick, ...rest }: Props) {
+// Tap once to listen, tap again to send. The big one sits on the empty chat,
+// the smaller one under the messages.
+export default function MicButton({ size = 'docked', listening = false, busy = false, className, type = 'button', onClick, ...rest }: Props) {
   const classes = [styles.mic, size === 'empty' && styles.empty, listening && styles.listening, className]
     .filter(Boolean)
     .join(' ')
@@ -24,7 +25,7 @@ export default function MicButton({ size = 'composer', listening = false, busy =
       aria-pressed={listening}
       aria-disabled={busy || undefined}
       onClick={busy ? undefined : onClick}
-      data-inspect={size === 'empty' ? 'MicEmptyState' : 'MicComposer'}
+      data-inspect={size === 'empty' ? 'MicEmptyState' : 'MicDocked'}
       {...rest}
     >
       {listening && (

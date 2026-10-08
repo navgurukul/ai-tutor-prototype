@@ -1,0 +1,11 @@
+/* A slow drift, so the picture is alive without asking to be looked at.
+   Only the globe moves, and only its transform. */
+.drift {
+  animation: drift calc(var(--motion-pulse) * 2.5) ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  to {
+    transform: translateY(calc(var(--space-3) * -1));
+  }
+}

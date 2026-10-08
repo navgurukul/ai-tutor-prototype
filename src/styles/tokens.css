@@ -67,7 +67,13 @@
   --weight-bold: 700;
   --weight-heavy: 800;
 
-  /* 4 · Typography: one step = size and line height */
+  /*
+   * 4 · Typography: one step = size and line height. The display step is
+   * not in the tokens file: it was added for the Welcome heading and is
+   * still to be agreed and added to docs/style-tokens.md.
+   */
+  --display-size: 64px;
+  --display-line: 72px;
   --h1-size: 40px;
   --h1-line: 48px;
   --h2-size: 32px;
@@ -144,6 +150,7 @@
   --size-64: 64px;
   --size-96: 96px;
   --size-112: 112px;
+  --size-128: 128px;
   --profile-card-width: 160px;
   --profile-card-height: 192px;
   --sidebar-width: 280px;

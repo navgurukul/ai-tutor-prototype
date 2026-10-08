@@ -9,7 +9,7 @@ import styles from './FlowsPage.module.css'
 const boards = [
   { src: board1, title: '1 · Launch and profiles', covers: 'App launch, background loading, welcome, making a profile, the profile picker.' },
   { src: board2, title: '2 · Asking a question', covers: 'Empty chat, speaking or typing, Cancel, suggestion chips.' },
-  { src: board3, title: '3 · Thinking and the answer', covers: 'Thinking steps, the not-found fallback, the answer, speech, Hear again, Explain simpler.' },
+  { src: board3, title: '3 · Thinking and the answer', covers: 'Thinking steps, the not-found fallback, the answer, speech, Hear again, Make it simpler.' },
   { src: board4, title: '4 · Coming back to chats', covers: 'New chat, old chats, Switch, the 15-minute idle return, chat titles.' },
 ]
 

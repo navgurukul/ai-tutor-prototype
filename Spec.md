@@ -56,7 +56,7 @@ Rules the prototype must follow:
 | Motion | 200 ms ease-out, animating only `transform` and `opacity`. Respect `prefers-reduced-motion`. |
 | Performance | No shadows on items inside long scrolling lists. No animation libraries. |
 | Access | Every action works by keyboard. Visible focus ring on everything focusable. Text can be zoomed to 150% without breaking layout. |
-| Wording | "Class", not "Grade". No jargon like "model", "tokens" or "TTFT" anywhere a student can see. |
+| Wording | "Class", not "Grade". No jargon like "model", "tokens" or "TTFT" anywhere a student can see. Button labels are in Title Case, every word capitalised: "Start Asking", "Make It Simpler". Headings, captions, messages and placeholder text stay in sentence case. |
 
 The working name is "AI Tutor". Keep it in one constant, `APP_NAME`, because the real name is still open (Samjho and Kyun are candidates).
 
@@ -142,7 +142,7 @@ Rules from the tokens file the agent tends to miss:
 - White text only on `purple`, `purple-dark`, `ink` and `green-text`. Never white on `green` or `orange`.
 - Status messages always pair colour with an icon and words.
 - Focus ring: 3 px `purple`, 2 px offset, on every focusable element, using `:focus-visible`.
-- Key terms in answers get a 3 px `pink` bottom border, not an underline.
+- Key terms in answers are weight 500, with no underline and no border, so they never look like links.
 - Answers max out at 68ch; the reading column at 720 px.
 - Titles use `text-wrap: balance`, paragraphs `text-wrap: pretty`.
 - Motion is parked until the mascot decision, so stick to the 200 ms rule above and add no character animation.
@@ -169,8 +169,8 @@ Speech recognition caveat: in Chrome and Edge, the Web Speech API sends audio to
 
 Fake content in `src/data/`:
 
-- `textbooks.ts`: for Class 6 and 7, about 6 chapters each in Science and Mathematics, with real NCERT chapter names, a page range, and keywords. Chips on the empty chat come from this list.
-- `answers.ts`: about 10 canned answers for the likeliest demo questions (solar system, planets, dwarf planets, exoplanets, components of food, fractions, photosynthesis, speed). Mark key terms with `**`. Check every answer for facts before shipping. The POC said exoplanets were unconfirmed and that Pluto is the only dwarf planet, and both claims are wrong.
+- `textbooks.ts`: for Class 6 and 7, every chapter in Science and Mathematics (Class 7 Mathematics: Part 1 only), with real NCERT chapter names, a page range, and keywords. Classes 8 to 12 have no chapters, so their searches find nothing.
+- `answers.ts`, with the answers in `answers6.ts` and `answers7.ts`: about 70 canned answers spread across those chapters, each with a simpler version and the words that trigger it. The first answer whose trigger words fit the question wins, so narrow topics are listed before broad ones. Every question that works is listed in `docs/test-questions.md`; update that page whenever an answer changes. The Fake mic types these questions out. Mark key terms with `**`. Check every answer for facts before shipping. The POC said exoplanets were unconfirmed and that Pluto is the only dwarf planet, and both claims are wrong.
 - `names.ts`: 20 friendly adjectives (Brave, Clever, Curious, Kind, Bright, Calm, Happy, Quick, Gentle, Bold and so on), nothing that could read as an insult.
 - `animals.ts`: lion, elephant, tiger, panda, eagle, parrot, owl, penguin, dolphin, butterfly, each with a tint from the tokens file.
 
@@ -197,75 +197,100 @@ This section walks the four flow boards in order. Copy in quotes is the actual t
 
 On app start, call `model.load()` and `memory.check()` at once, before any screen renders, and keep their status in the store. No profiles saved means first launch, so show Welcome. Otherwise show the Profile picker.
 
-Low memory: if the check says low, show a `warning` StatusBanner at the top of whatever screen is up, never a blocking dialog. Copy: "Your laptop is running low on memory. Close other apps, like Chrome, so your tutor runs smoothly." Button: "Check again", which re-runs the check and hides the banner when memory is fine. Say nothing when memory is fine.
+Low memory: if the check says low, show a `warning` StatusBanner at the top of whatever screen is up, never a blocking dialog. Copy: "Your laptop is running low on memory. Close other apps, like Chrome, so your tutor runs smoothly." The banner is as wide as its sentence and centred, and it has no button. While it is up, the app runs the check again every 5 seconds and hides the banner as soon as memory is fine. Say nothing when memory is fine.
 
 ### Welcome
 
-Shown only on the first launch on a laptop. Centred: `APP_NAME` as h1, the tagline "Ask anything from your books.", a small line with an icon, "Works without internet", and a primary button "Get started" that opens profile step 1.
+Shown only on the first launch on a laptop. Four looks are being compared, two layouts in two colours each: Centred Bold (the default), Centred Calm, Two Panel Calm and Two Panel Bold. One will ship.
+
+Centred Bold: the window is `purple` and everything sits on one centre line:
+
+- At the top, a book icon and `APP_NAME` in h5, white.
+- In the middle of the space that is left: the heading "Ask anything from your books." (display, white, one line; h1 below 1200 px), the line "Answers come straight from the books you study in class." (`text-lg`), then the button "Start Asking" with an arrow, which opens profile step 1. The button is white with `purple-dark` words, 64 px tall with `text-lg` words, a step bigger than a normal button because it is the only thing to press. Under it, as plain text with an icon so it can't be taken for a second button: "Works without internet".
+- Along the bottom, the shelf picture (`WelcomeShelf.tsx`): school books with a set square, a magnet, a clay pot, a globe over an open book, Hindi and English letter tiles and a leaf. It is 72% of the window wide, up to 1152 px, and centred, so it does not outweigh the button. It stands on a 3 px `ink` line that runs the full width of the window, with a `purple-dark` strip under it. The globe drifts slowly up and down over the open book (16 units of the drawing, about 8 px on screen, 4 seconds each way, transform only); with reduced motion it stays still.
+
+The mock-up is `docs/feedback/Centred · bookshelf along the bottom@2x.png`.
+
+Centred Calm: the same layout on the app background, `bg`. The name and heading are `gray-900`, the line under the heading `gray-700`, "Works without internet" `gray-500`. The button is the normal `purple` primary with white words, at the same 64 px size. The strip under the shelf line is `green-tint`.
+
+Two Panel Calm and Two Panel Bold: the two earlier looks, with the words on the left and a round picture on the right (`WelcomeArt.tsx`), on `bg` or on `purple`. Their mock-ups are in `docs/welcome-screen/`.
 
 ### Create profile (three steps)
 
+The open book and globe from Welcome (`BookAndGlobe.tsx`) stand on the top edge of the card, centred, so the two screens feel like one app: 192 px wide, 128 px below 1200 px, and not moving. Below 1200 px it is hidden while the low-memory warning is up, so the picture never adds scrolling.
+
 One step per screen, a "Step 1 of 3" caption, Back on steps 2 and 3. Back on step 1 returns to Welcome or the picker, wherever the student came from. The model keeps loading in the background the whole time.
 
-1. Pick an animal. Grid of the 10 animals in tinted circles. Selected: `lilac` fill and a 2 px `purple` border. "Next" is disabled until one is picked. When the student arrives from the picker, show one intro line above the grid: "Let's make your profile. It takes three steps."
-2. Name. The Name input comes prefilled with adjective plus animal, like "Brave Owl", with no digits and never a name another profile on this laptop already has. "Surprise me" makes a new one. The student can type their own, up to 20 characters. A typed name that already exists shows the helper "Someone on this laptop already has this name." and disables Next.
-3. Class. Class chips from 6 to 12, 48 px tall. Helper caption: "Your teacher can change this later." Primary button: "Start learning", which saves the profile and opens an empty chat.
+1. Choose your avatar. Grid of the 10 animals in tinted circles. Selected: `lilac` fill and a 2 px `purple` border. "Next" is disabled until one is picked. When the student arrives from the picker, show one intro line above the grid: "Let's make your profile. It takes three steps."
+2. Name. The Name input comes prefilled with adjective plus animal, like "Brave Owl", with no digits and never a name another profile on this laptop already has. "Surprise Me" makes a new one. The student can type their own, up to 20 characters. A typed name that already exists shows the helper "Someone on this laptop already has this name." and disables Next.
+3. Class. Class chips from 6 to 12, 48 px tall. Helper caption: "Your teacher can change this later." Primary button: "Start Learning", which saves the profile and opens an empty chat.
 
 Animal avatars can be emoji inside the tinted circle for the prototype. Mark them as placeholders in the code; illustrated avatars come later.
 
 ### Profile picker
 
-Heading "Who's learning today?" (h1). One Profile card per student, then the dashed "New profile" card. With 3 to 5 profiles everything fits on one screen without scrolling. Clicking a card opens a new empty chat for that profile. No delete, rename or lock anywhere.
+Heading "Who's learning today?" (h1). One Profile card per student, then the dashed "New Profile" card. With 3 to 5 profiles everything fits on one screen without scrolling. Clicking a card opens a new empty chat for that profile. No delete, rename or lock anywhere.
 
 ### Chat screen layout
 
-The sidebar is 280 px at 1200 px and wider, a 72 px icon rail from 1024 to 1199 px, and a drawer below 1024 px. Top to bottom: "New chat" button, the "RECENT CHATS" label, this profile's chats newest first (History rows, active one in `lilac`), and at the bottom the profile's avatar, name and a "Switch" ghost button.
+The sidebar is 280 px at 1200 px and wider, a 72 px icon rail from 1024 to 1199 px, and a drawer below 1024 px. Top to bottom: "New Chat" button, the "RECENT CHATS" label, this profile's chats newest first (History rows, active one in `lilac`), and at the bottom the profile's avatar, name and a "Switch" ghost button.
 
-The main area has a reading column, max 720 px, centred. Top right: a voice control with "Voice on" or "Voice off" and a speed choice, "Normal" or "Slow" (rate 1.0 or 0.85).
+The main area has a reading column, max 720 px, centred. Top right: a voice control with "Voice On" or "Voice Off" and a speed choice, "Normal" or "Slow" (rate 1.0 or 0.85).
 
 ### Empty chat (board 2)
 
-Every profile entry and every New chat starts here. Centred: "Hi, Brave Owl" (h2), "What do you want to understand today?" (text-lg), the 112 px empty-state mic with the caption "Tap to speak", then 3 or 4 suggestion chips drawn from the student's class chapters (for example "What are the components of food?"), then a quiet text input with the placeholder "Or type your question". Tapping a chip sends its text as the question.
+Every profile entry and every New Chat starts here. Centred, top to bottom:
+
+- "Hi, Brave Owl" as a small line (text-lg, `gray-700`).
+- "What do you want to understand today?" as the main heading (h2).
+- The 128 px empty-state mic in `purple`, with the caption "Tap to speak". At rest a soft purple ripple spreads from its edge, to show it is ready.
+- The way into typing: "Can't speak right now?" followed by a text button with a keyboard icon, "Type Your Question".
+
+There are no suggestion chips and no text box until the student asks for one. Pressing "Type Your Question" opens the text box under the mic, in space kept for it, so the mic does not move. The box stays open for the rest of that chat.
 
 An empty chat isn't added to Recent chats until its first question is sent.
 
 ### Listening
 
-Tapping the mic starts listening. The mic turns `purple-dark` with `white-60` pulse rings, the caption becomes "Listening. Tap again to send.", the live transcript shows above it in text-lg, and a "Cancel" ghost button appears.
+Tapping the mic starts listening. The mic turns `purple-dark` with `white-60` pulse rings, the caption becomes "Listening. Tap again to send.", and a "Cancel" ghost button takes the place of the way into typing. The live transcript shows in text-lg: on the empty chat it takes the place of the greeting and the question, and under the messages it appears just above the mic. Once sent, the words become the student's message bubble.
 
 - Tap again: stop and send the final transcript.
 - Cancel or Esc: throw the transcript away and go back to the idle mic.
 - Empty transcript on send: don't send; show "I didn't catch that. Try again." under the mic.
-- 60 seconds of listening: stop, put the transcript into the text input, and focus it so the student can fix it and press Enter, or clear it.
+- 60 seconds of listening: stop, open the text box, put the transcript into it, and focus it so the student can fix it and press Enter, or clear it.
 - No silence detection. Listening only ends by tap, Cancel or the time limit.
 
-After the first question, the empty state goes away. Messages fill the column and the Composer docks at the bottom: 64 px mic, a text field and a Send icon button. The composer mic behaves exactly like the big one. Enter sends; Shift+Enter adds a line. Send and the mic are disabled while an answer is being worked on, but the student can still type.
+After the first question, the empty state goes away. Messages fill the column and the mic docks under them, centred: a 64 px `purple` mic with the same ripple, its caption, and the same "Can't speak right now? Type Your Question" line below it. The docked mic behaves exactly like the big one. There is no white bar until the student asks to type.
+
+Typing: the text box (the Composer) takes the place of the docked mic. It holds a small mic icon button, "Speak Instead", the text field and a Send icon button. While the student types, the edge of the box turns `purple`; the field inside has no highlight of its own. Enter sends; Shift+Enter adds a line. "Speak Instead" goes back to the mic and starts listening at once. Sending a question by voice also closes the text box. If the student opened the text box on the empty chat, it is still open after the first question.
+
+Send and the mic are disabled while an answer is being worked on, and the mic's caption is blank, but the student can still type.
 
 ### Thinking steps (board 3)
 
-Right after the student's message, a ThinkingSteps block appears where the answer will go. Steps stack vertically, one line each: an icon, then text-sm. The current step has a gentle animated icon, finished steps show a check in `gray-500`, and upcoming steps don't show yet.
+Right after the student's message, a ThinkingSteps block appears where the answer will go. Steps stack vertically, one line each: an icon, then text-sm. Each step has its own icon. The current step's icon has a gentle animation, finished steps turn `gray-500`, and upcoming steps don't show yet.
 
-1. "Getting ready". Shown only if the model isn't loaded when the question is sent; done when the load finishes.
-2. "Searching your Class 6 books", with the profile's class number. Done when retrieval returns.
-3. "Writing the answer". Done when generation returns.
+1. "Getting ready" (hourglass). Shown only if the model isn't loaded when the question is sent; done when the load finishes, and then it shows a tick.
+2. "Searching your Class 6 books" (magnifier), with the profile's class number. Done when retrieval returns: the line then reads "Found it in Science, Chapter 12, page 215" and shows a book with a tick.
+3. "Putting it into simple words" (pen). Done when generation returns.
 
-Steps change only when a service call finishes, never on a timer. If the whole wait passes 10 seconds, add the caption "Still working. This laptop may take a little longer." under the steps. At 45 seconds, treat it as a failure.
+Steps change only when a service call finishes, never on a timer. If the whole wait passes 10 seconds, add the caption "Still working on it. Just a few more moments." under the steps. The caption encourages the student and never blames the laptop. At 45 seconds, treat it as a failure.
 
 Not found: replace the steps with a tutor message in plain answer style (not an error): "I couldn't find this in your Class 6 books. Try asking it another way, or ask your teacher." It is spoken too. There is no "answer anyway" option.
 
-Failure: replace the steps with an `error` StatusBanner: "Something went wrong." and a "Try again" button that resends the same question.
+Failure: replace the steps with an `error` StatusBanner: "Something went wrong." and a "Try Again" button that resends the same question.
 
 All step changes and the answer's arrival go through an `aria-live="polite"` region.
 
 ### Answer
 
-The tutor answer has no bubble: `text` at weight 400, h5 and h6 for any headings, key terms with the pink border, max 68ch. Under it sits the Source chip, for example "NCERT · Class 6 Science · Ch 8 · p. 74", then a row of three controls:
+The tutor answer has no bubble: `text` at weight 400, h5 and h6 for any headings, key terms at weight 500, max 68ch. Under it sits the Source chip, for example "NCERT · Class 6 Science · Ch 8 · p. 74", then its controls. The two buttons are text buttons with no border, so they stay quieter than the answer:
 
-- "Hear again" (volume icon). While the tutor is speaking, this button becomes "Stop" (square icon).
-- "Explain simpler". Adds a small student message, "Explain it simpler", then runs the steps again, skipping search and showing only "Writing the answer", and gives a new, simpler answer with the same source.
+- "Hear Again" (volume icon). While the tutor is speaking, this button becomes "Stop" (square icon).
+- "Make It Simpler". Adds a small student message, "Make it simpler", then runs the steps again, skipping search and showing only "Putting it into simpler words", and gives a new, simpler answer with the same source.
 - The Source chip itself counts as the third control. In the prototype it shows a tooltip with the full book and page; in the real app it will open the page.
 
-If Voice is on, the newest answer starts speaking as soon as it appears. Older answers only speak through Hear again. Tapping the mic while the tutor is speaking stops the speech at once and starts listening. Switching profiles, opening another chat or New chat also stops speech.
+If Voice is on, the newest answer starts speaking as soon as it appears. Older answers only speak through Hear Again. Tapping the mic while the tutor is speaking stops the speech at once and starts listening. Switching profiles, opening another chat or New Chat also stops speech.
 
 ### History, titles and switching (board 4)
 
@@ -277,7 +302,7 @@ Switch goes to the profile picker. Idle return: after 15 minutes with no pointer
 
 ### Keyboard
 
-Tab reaches every control in visual order. Space or Enter on the focused mic starts and stops listening. Esc cancels listening, closes the drawer, or closes a dialog. Icon-only buttons have an `aria-label`. With `prefers-reduced-motion`, the pulse rings and step animations become static icons.
+Tab reaches every control in visual order. Space or Enter on the focused mic starts and stops listening. Esc cancels listening, closes the drawer, or closes a dialog. Icon-only buttons have an `aria-label`. With `prefers-reduced-motion`, the pulse rings and step animations become static icons, and the ripple on the resting mic is hidden.
 
 ## Inspect mode and the prototype bar
 
@@ -288,6 +313,7 @@ An "Inspect" toggle in the prototype bar turns on a Figma-style inspector. Hover
 A 40 px strip above the app, in `ink` with white text, so nobody mistakes it for product UI. Left: "AI Tutor prototype" and the version. Right, in order:
 
 - Frame: "Fit window", "1366 × 768", "1280 × 720", "1920 × 1080", "1024 × 640". Any fixed size renders the app inside a frame of exactly that size, centred, so layouts can be checked at each size.
+- Welcome: "Centred Bold", "Centred Calm", "Two Panel Calm", "Two Panel Bold". Picks which Welcome look is shown and opens that screen, even on a laptop that already has profiles. Centred Bold is the default.
 - "Inspect" toggle, also Alt+I.
 - "Scenarios", which opens the Scenarios panel.
 - "Flows", "Tokens" and "Components", which open the reference pages: the four flow images, every token as a swatch with its name and value, and every component in every state.
@@ -340,8 +366,8 @@ Nine phases, each small enough for one agent session and each ending in somethin
 | 2 · Inspect | Inspector, panel, token map, distances, Copy CSS, Frame sizes | Clicking any component on the Components page shows its values with token names, and a hard-coded test value shows "not a token" |
 | 3 · Services | Store, `localStorage`, all simulated services, `data/` files, Scenarios panel | A temporary debug page can call each service and every scenario changes its result |
 | 4 · Launch and profiles | Background load and memory check, low-memory banner, Welcome, the three profile steps, Profile picker | First launch runs Welcome to empty chat; a second launch opens the picker; names never repeat |
-| 5 · Asking | Chat layout, sidebar (full, rail, drawer), empty chat, chips, typing, listening, Cancel, 60 s limit, docked composer | A question can be sent by voice, Fake mic, chip and keyboard |
-| 6 · Thinking and answer | Thinking steps, slow-wait caption, not-found message, failure with Try again, answer, Source chip, Hear again, Stop, Explain simpler, speed, interrupting | Every scenario in the Scenarios panel produces the behaviour on board 3 |
+| 5 · Asking | Chat layout, sidebar (full, rail, drawer), empty chat, typing, listening, Cancel, 60 s limit, docked mic and text box | A question can be sent by voice, Fake mic and keyboard |
+| 6 · Thinking and answer | Thinking steps, slow-wait caption, not-found message, failure with Try Again, answer, Source chip, Hear Again, Stop, Make It Simpler, speed, interrupting | Every scenario in the Scenarios panel produces the behaviour on board 3 |
 | 7 · History | Recent chats per profile, reopening and continuing, placeholder and generated titles, Switch, idle return | Board 4 works end to end, including the 30 s Short idle timer |
 | 8 · Polish and QA | Keyboard pass, 150% zoom, reduced motion, all frame sizes, contrast check with Inspect, README update | Every item in the checklist below is ticked |
 
@@ -352,14 +378,16 @@ After each phase, ask the agent to commit with a message naming the phase, so an
 The prototype is done when every box below is ticked on the deployed link in Chrome or Edge on Windows.
 
 - [ ] First launch: Welcome, three profile steps, empty chat, with the model loading in the background the whole time
-- [ ] Second launch opens the picker; New profile skips Welcome and shows the intro line
+- [ ] Second launch opens the picker; New Profile skips Welcome and shows the intro line
 - [ ] Two profiles on one laptop can never end up with the same name
-- [ ] Memory low scenario shows the banner on the current screen, and Check again clears it
+- [ ] Memory low scenario shows the banner on the current screen, and it goes away by itself once the scenario is switched off
 - [ ] A question asked during Cold model shows "Getting ready" first
-- [ ] Voice, Fake mic, chip and typed questions all send; Cancel and Esc discard; the 60 s limit moves the transcript into the text field
+- [ ] Voice, Fake mic and typed questions all send; Cancel and Esc discard; the 60 s limit opens the text box with the transcript in it
+- [ ] The mic leads on the empty chat and under the messages; the text box appears only after "Type Your Question"
+- [ ] Every question in `docs/test-questions.md` gets its answer in a profile of that class
 - [ ] Thinking steps change only when services finish; Slow laptop shows the 10 s caption
-- [ ] Not-found and failure each look and read as specified; Try again resends
-- [ ] The newest answer speaks on its own; Stop, Hear again, Explain simpler and Slow speed all work
+- [ ] Not-found and failure each look and read as specified; Try Again resends
+- [ ] The newest answer speaks on its own; Stop, Hear Again, Make It Simpler and Slow speed all work
 - [ ] Tapping the mic mid-speech stops the speech and starts listening
 - [ ] Titles start as the trimmed question and swap to a short title after the first answer
 - [ ] Old chats reopen and continue; Switch and idle return both land on the picker with speech stopped
@@ -371,4 +399,4 @@ The prototype is done when every box below is ticked on the deployed link in Chr
 
 Out of scope for this prototype: the real model, Ollama, real retrieval, local speech-to-text, speech that starts sentence by sentence, Electron packaging, Hindi, admin tools, the final app name and logo, illustrated avatars, and any mascot or motion beyond the 200 ms rule.
 
-Still open, to decide before the real build: the app name, the Synonym licence credit, the icon library (Lucide is used here as a stand-in), and whether the team can pull chapter names per class for the suggestion chips.
+Still open, to decide before the real build: the app name, the Synonym licence credit, the icon library (Lucide is used here as a stand-in), and test content for Class 8 to 12, which have no chapters or answers yet.

@@ -70,17 +70,17 @@ export default function TutorAnswer({ text, source, speaking = false, onHearAgai
         <div className={styles.actions}>
           {onHearAgain &&
             (speaking ? (
-              <Button variant="ghost" icon={<Square aria-hidden="true" />} onClick={onStop}>
+              <Button variant="text" icon={<Square aria-hidden="true" />} onClick={onStop}>
                 Stop
               </Button>
             ) : (
-              <Button variant="ghost" icon={<Volume2 aria-hidden="true" />} onClick={onHearAgain}>
-                Hear again
+              <Button variant="text" icon={<Volume2 aria-hidden="true" />} onClick={onHearAgain}>
+                Hear Again
               </Button>
             ))}
           {onExplainSimpler && (
-            <Button variant="ghost" onClick={onExplainSimpler} busy={busy}>
-              Explain simpler
+            <Button variant="text" onClick={onExplainSimpler} busy={busy}>
+              Make It Simpler
             </Button>
           )}
         </div>

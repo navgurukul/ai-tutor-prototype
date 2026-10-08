@@ -157,7 +157,7 @@ export function buildTokenMap(): TokenMap {
       name,
       size: px(`${name}-size`),
       line: px(`${name}-line`),
-      font: /^h\d$/.test(name) ? 'font-heading' : name === 'label' ? 'font-label' : 'font-text',
+      font: /^(display|h\d)$/.test(name) ? 'font-heading' : name === 'label' ? 'font-label' : 'font-text',
     }))
 
   return { find, steps, count: tokens.length }

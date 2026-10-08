@@ -1,4 +1,4 @@
-import { ArrowUp, BookOpen, Hourglass, PenLine, Plus, Search, Volume2, X } from 'lucide-react'
+import { ArrowUp, BookOpen, BookOpenCheck, Hourglass, PenLine, Plus, Search, Volume2, X } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Avatar, AvatarOption } from '../components/Avatar.tsx'
 import Button from '../components/Button.tsx'
@@ -119,22 +119,9 @@ function State(props: { label: string; force?: Force; target?: string; wide?: bo
   )
 }
 
-function ComposerDemo(props: { text?: string; listening?: boolean; transcript?: string; busy?: boolean; hint?: string }) {
+function ComposerDemo(props: { text?: string; busy?: boolean; speak?: boolean }) {
   const [value, setValue] = useState(props.text ?? '')
-  const [listening, setListening] = useState(props.listening ?? false)
-  return (
-    <Composer
-      value={value}
-      onChange={setValue}
-      onSend={() => setValue('')}
-      onMic={() => setListening(!listening)}
-      onCancel={() => setListening(false)}
-      listening={listening}
-      transcript={props.transcript}
-      busy={props.busy}
-      hint={props.hint}
-    />
-  )
+  return <Composer value={value} onChange={setValue} onSend={() => setValue('')} onSpeak={props.speak === false ? undefined : () => {}} busy={props.busy} />
 }
 
 function NameDemo({ start, error }: { start: string; error?: string }) {
@@ -158,7 +145,7 @@ function ClassPickerDemo() {
 function AnimalGridDemo() {
   const [picked, setPicked] = useState('owl')
   return (
-    <div className={styles.animalGrid} role="group" aria-label="Pick an animal">
+    <div className={styles.animalGrid} role="group" aria-label="Choose your avatar">
       {animals.map((animal) => (
         <AvatarOption key={animal.id} animal={animal} selected={picked === animal.id} onClick={() => setPicked(animal.id)} />
       ))}
@@ -178,7 +165,7 @@ function DrawerDemo() {
   return (
     <>
       <Button variant="outline" onClick={() => setOpen(true)}>
-        Open the drawer
+        Open Drawer
       </Button>
       <Drawer open={open} onClose={() => setOpen(false)} label="Chats and profile">
         <Sidebar
@@ -199,7 +186,7 @@ function DialogDemo() {
   return (
     <>
       <Button variant="outline" onClick={() => setOpen(true)}>
-        Open the dialog
+        Open Dialog
       </Button>
       <Dialog
         open={open}
@@ -208,9 +195,9 @@ function DialogDemo() {
         actions={
           <>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Keep everything
+              Keep Everything
             </Button>
-            <Button onClick={() => setOpen(false)}>Start again</Button>
+            <Button onClick={() => setOpen(false)}>Start Again</Button>
           </>
         }
       >
@@ -240,46 +227,46 @@ export default function ComponentsPage() {
       <Section id="buttons" title="Buttons">
         <Specimen name="Primary button" spec="Height 48 · radius-pill · purple · text 700 white · padding 0 24 · hover purple-dark">
           <State label="Default">
-            <Button>Get started</Button>
+            <Button>Start Asking</Button>
           </State>
           <State label="Hover" force="hover">
-            <Button>Get started</Button>
+            <Button>Start Asking</Button>
           </State>
           <State label="Pressed" force="pressed">
-            <Button>Get started</Button>
+            <Button>Start Asking</Button>
           </State>
           <State label="Focus" force="focus">
-            <Button>Get started</Button>
+            <Button>Start Asking</Button>
           </State>
           <State label="Disabled">
             <Button disabled>Next</Button>
           </State>
           <State label="With icon">
-            <Button icon={<Plus aria-hidden="true" />}>New chat</Button>
+            <Button icon={<Plus aria-hidden="true" />}>New Chat</Button>
           </State>
         </Specimen>
 
         <Specimen name="Outline button" spec="Height 48 · radius-pill · white · border-1 gray-300 · text 700 gray-900 · elevation-1">
           <State label="Default">
-            <Button variant="outline">Surprise me</Button>
+            <Button variant="outline">Surprise Me</Button>
           </State>
           <State label="Hover" force="hover">
-            <Button variant="outline">Surprise me</Button>
+            <Button variant="outline">Surprise Me</Button>
           </State>
           <State label="Pressed" force="pressed">
-            <Button variant="outline">Surprise me</Button>
+            <Button variant="outline">Surprise Me</Button>
           </State>
           <State label="Focus" force="focus">
-            <Button variant="outline">Surprise me</Button>
+            <Button variant="outline">Surprise Me</Button>
           </State>
           <State label="Disabled">
             <Button variant="outline" disabled>
-              Surprise me
+              Surprise Me
             </Button>
           </State>
           <State label="With icon">
             <Button variant="outline" icon={<Plus aria-hidden="true" />}>
-              New chat
+              New Chat
             </Button>
           </State>
         </Specimen>
@@ -299,12 +286,32 @@ export default function ComponentsPage() {
           </State>
           <State label="Disabled">
             <Button variant="ghost" disabled>
-              Explain simpler
+              Switch
+            </Button>
+          </State>
+        </Specimen>
+
+        <Specimen name="Text button" spec="Not in the tokens file. Height 40 · no border, no fill · text-sm 700 gray-700 · hover: ink-tint fill, gray-900">
+          <State label="Default">
+            <Button variant="text">Make It Simpler</Button>
+          </State>
+          <State label="Hover" force="hover">
+            <Button variant="text">Make It Simpler</Button>
+          </State>
+          <State label="Pressed" force="pressed">
+            <Button variant="text">Make It Simpler</Button>
+          </State>
+          <State label="Focus" force="focus">
+            <Button variant="text">Make It Simpler</Button>
+          </State>
+          <State label="Disabled">
+            <Button variant="text" disabled>
+              Make It Simpler
             </Button>
           </State>
           <State label="With icon">
-            <Button variant="ghost" icon={<Volume2 aria-hidden="true" />}>
-              Hear again
+            <Button variant="text" icon={<Volume2 aria-hidden="true" />}>
+              Hear Again
             </Button>
           </State>
         </Specimen>
@@ -364,7 +371,7 @@ export default function ComponentsPage() {
       </Section>
 
       <Section id="mic" title="Mic">
-        <Specimen name="Mic, composer" spec="64 circle · ink · icon 24 white · elevation-4 · listening: purple-dark + white-60 rings">
+        <Specimen name="Mic, docked" spec="64 circle · purple · icon 24 white · elevation-4 · at rest: a soft purple ripple · listening: purple-dark + white-60 rings">
           <State label="Default">
             <MicButton />
           </State>
@@ -385,7 +392,7 @@ export default function ComponentsPage() {
           </State>
         </Specimen>
 
-        <Specimen name="Mic, empty state" spec="112 circle · icon 32 · same styling">
+        <Specimen name="Mic, empty state" spec="128 circle · icon 32 · same styling">
           <State label="Default">
             <MicButton size="empty" />
           </State>
@@ -627,12 +634,12 @@ export default function ComponentsPage() {
           </State>
           <State label="Small follow-up" wide>
             <div className={styles.column}>
-              <MessageStudent small>Explain it simpler</MessageStudent>
+              <MessageStudent small>Make it simpler</MessageStudent>
             </div>
           </State>
         </Specimen>
 
-        <Specimen name="Tutor answer" spec="No bubble · text 400 · h5 and h6 for headings · max 68ch · key terms with a 3px pink bottom border" stack>
+        <Specimen name="Tutor answer" spec="No bubble · text 400 · h5 and h6 for headings · max 68ch · key terms at weight 500 · text buttons under it" stack>
           <State label="Default" wide>
             <div className={styles.column}>
               <TutorAnswer text={sampleAnswer} source={sampleSource} onHearAgain={() => {}} onExplainSimpler={() => {}} />
@@ -659,18 +666,15 @@ export default function ComponentsPage() {
       </Section>
 
       <Section id="composer" title="Composer">
-        <Specimen name="Composer" spec="radius-24 · white · elevation-3 · padding 16 · max width 720" stack>
+        <Specimen name="Composer" spec="The text box, shown once the student asks to type. radius-24 · white · elevation-3 · padding 8 · max width 720 · typing: border-2 purple on the box" stack>
           <State label="Empty (live)" wide>
             <ComposerDemo />
           </State>
-          <State label="With a typed question" wide>
+          <State label="Typing" force="focus" target="textarea" wide>
             <ComposerDemo text="How many planets are there?" />
           </State>
-          <State label="Listening" wide>
-            <ComposerDemo listening transcript="How many planets are there in" />
-          </State>
-          <State label="Nothing was heard" wide>
-            <ComposerDemo hint="I didn’t catch that. Try again." />
+          <State label="On the empty chat, where the big mic is still on screen" wide>
+            <ComposerDemo speak={false} />
           </State>
           <State label="While an answer is being worked on" wide>
             <ComposerDemo text="And which one is the biggest?" busy />
@@ -699,7 +703,7 @@ export default function ComponentsPage() {
       </Section>
 
       <Section id="thinking" title="Thinking steps">
-        <Specimen name="Thinking steps" spec="Not in the tokens file. One line per step: icon 20, then text-sm. Finished steps show a check in gray-500">
+        <Specimen name="Thinking steps" spec="Not in the tokens file. One line per step: icon 20, then text-sm. Each step has its own icon. Finished steps turn gray-500 and show a tick, or a book once the answer is found">
           <State label="Getting ready">
             <ThinkingSteps steps={[{ label: 'Getting ready', state: 'current', icon: Hourglass }]} />
           </State>
@@ -709,8 +713,8 @@ export default function ComponentsPage() {
           <State label="Writing">
             <ThinkingSteps
               steps={[
-                { label: 'Found it in Science, Chapter 12, page 215', state: 'done' },
-                { label: 'Writing the answer', state: 'current', icon: PenLine },
+                { label: 'Found it in Science, Chapter 12, page 215', state: 'done', doneIcon: BookOpenCheck },
+                { label: 'Putting it into simple words', state: 'current', icon: PenLine },
               ]}
             />
           </State>
@@ -727,14 +731,12 @@ export default function ComponentsPage() {
       </Section>
 
       <Section id="status" title="Status banner">
-        <Specimen name="Status banner" spec="Not in the tokens file. Status pair · icon 24 · text 500 · radius-16 · optional ghost button" stack>
-          <State label="Warning, with a button" wide>
-            <StatusBanner tone="warning" action={{ label: 'Check again', onClick: () => {} }}>
-              Your laptop is running low on memory. Close other apps, like Chrome, so your tutor runs smoothly.
-            </StatusBanner>
+        <Specimen name="Status banner" spec="Not in the tokens file. Status pair · as wide as its words · icon 24 · text 500 · radius-16 · optional ghost button, 48 from the words" stack>
+          <State label="Warning" wide>
+            <StatusBanner tone="warning">Your laptop is running low on memory. Close other apps, like Chrome, so your tutor runs smoothly.</StatusBanner>
           </State>
           <State label="Error, with a button" wide>
-            <StatusBanner tone="error" action={{ label: 'Try again', onClick: () => {} }}>
+            <StatusBanner tone="error" action={{ label: 'Try Again', onClick: () => {} }}>
               Something went wrong.
             </StatusBanner>
           </State>
@@ -756,8 +758,8 @@ export default function ComponentsPage() {
                 title="Start again?"
                 actions={
                   <>
-                    <Button variant="outline">Keep everything</Button>
-                    <Button>Start again</Button>
+                    <Button variant="outline">Keep Everything</Button>
+                    <Button>Start Again</Button>
                   </>
                 }
               >

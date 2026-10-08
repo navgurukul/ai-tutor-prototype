@@ -70,7 +70,7 @@ export default function Chat() {
       <main className={styles.main}>
         <div className={styles.top}>
           {mode === 'drawer' && (
-            <IconButton label="Show recent chats" className={styles.menu} onClick={() => setDrawerWanted(true)}>
+            <IconButton label="Show Recent Chats" className={styles.menu} onClick={() => setDrawerWanted(true)}>
               <PanelLeftOpen aria-hidden="true" />
             </IconButton>
           )}

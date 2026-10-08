@@ -97,3 +97,26 @@
   border-color: var(--gray-200);
   color: var(--gray-400);
 }
+
+/* Text: the quietest button, for actions that sit under something more
+   important, like the ones under an answer. */
+.text {
+  height: var(--size-40);
+  padding: 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--gray-700);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+}
+
+.text:hover:not(:disabled, [aria-disabled='true']),
+.text:active:not(:disabled, [aria-disabled='true']) {
+  background: var(--ink-tint);
+  color: var(--gray-900);
+}
+
+.text:disabled,
+.text[aria-disabled='true'] {
+  color: var(--gray-400);
+}

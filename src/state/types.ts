@@ -25,7 +25,7 @@ export type Source = {
 }
 
 export type Message =
-  // `small` is the follow-up the app adds for "Explain simpler", and `about`
+  // `small` is the follow-up the app adds for "Make it simpler", and `about`
   // is the answer it asks about.
   | { id: string; role: 'student'; text: string; small?: boolean; about?: string; at: number }
   // `plain` marks the "couldn't find it" message: answer style, no source.

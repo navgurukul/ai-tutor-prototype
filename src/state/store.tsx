@@ -46,6 +46,9 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
+// How often the memory check repeats while the warning is up.
+const MEMORY_RECHECK = 5_000
+
 const start = (): AppState => ({ ...loadSaved(), activeProfileId: null, modelStatus: model.status, memoryLow: false })
 
 export default function StoreProvider({ children }: { children: ReactNode }) {
@@ -65,6 +68,15 @@ export default function StoreProvider({ children }: { children: ReactNode }) {
     void launchMemoryCheck().then(({ low }) => dispatch({ type: 'memory/low', low }))
     return stop
   }, [])
+
+  // While memory is low the check repeats on its own, so the warning goes
+  // away once the student has closed enough apps.
+  const { memoryLow } = state
+  useEffect(() => {
+    if (!memoryLow) return
+    const timer = setInterval(() => void checkMemory(), MEMORY_RECHECK)
+    return () => clearInterval(timer)
+  }, [memoryLow, checkMemory])
 
   // Profiles, chats and settings survive a relaunch.
   const { profiles, chats, settings } = state

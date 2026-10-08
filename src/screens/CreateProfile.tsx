@@ -10,10 +10,11 @@ import { animalOf, animals } from '../data/animals.ts'
 import { cleanName, makeName, sameName } from '../data/names.ts'
 import { useStore } from '../state/storeContext.ts'
 import { classNums, newId, type ClassNum } from '../state/types.ts'
+import BookAndGlobe from './BookAndGlobe.tsx'
 import styles from './CreateProfile.module.css'
 import screen from './Screen.module.css'
 
-const titles = ['Pick an animal', 'Pick a name', 'Pick your class']
+const titles = ['Choose your avatar', 'Pick a name', 'Pick your class']
 
 // Three steps, one per screen: animal, name, class. The model keeps loading
 // in the background the whole time.
@@ -76,68 +77,72 @@ export default function CreateProfile() {
 
   return (
     <main className={screen.centred}>
-      <Card className={styles.card}>
-        <form className={styles.form} onSubmit={next}>
-          <header className={styles.header}>
-            <p className={`caption ${styles.step}`} id={stepId}>
-              Step {step} of 3
-            </p>
-            <h1 className="h2" tabIndex={-1} ref={heading} aria-describedby={stepId}>
-              {titles[step - 1]}
-            </h1>
-            {step === 1 && fromPicker && <p className={`text ${styles.intro}`}>Let&rsquo;s make your profile. It takes three steps.</p>}
-          </header>
+      {/* The book from Welcome, standing on the card. */}
+      <div className={state.memoryLow ? `${styles.stack} ${styles.tight}` : styles.stack}>
+        <BookAndGlobe className={styles.art} />
+        <Card className={styles.card}>
+          <form className={styles.form} onSubmit={next}>
+            <header className={styles.header}>
+              <p className={`caption ${styles.step}`} id={stepId}>
+                Step {step} of 3
+              </p>
+              <h1 className="h2" tabIndex={-1} ref={heading} aria-describedby={stepId}>
+                {titles[step - 1]}
+              </h1>
+              {step === 1 && fromPicker && <p className={`text ${styles.intro}`}>Let&rsquo;s make your profile. It takes three steps.</p>}
+            </header>
 
-          <div className={styles.body} key={step}>
-            {step === 1 && (
-              <div className={styles.animals} role="group" aria-label="Animals">
-                {animals.map((animal) => (
-                  <AvatarOption key={animal.id} animal={animal} selected={animal.id === animalId} onClick={() => pickAnimal(animal.id)} />
-                ))}
-              </div>
-            )}
-
-            {step === 2 && animalId && (
-              <>
-                <Avatar animal={animalOf(animalId)} />
-                <NameInput
-                  value={name}
-                  error={nameTaken ? 'Someone on this laptop already has this name.' : undefined}
-                  onChange={(event) => {
-                    setName(event.target.value)
-                    setTyped(true)
-                  }}
-                />
-                <Button variant="ghost" icon={<Dices aria-hidden="true" />} onClick={surprise}>
-                  Surprise me
-                </Button>
-              </>
-            )}
-
-            {step === 3 && (
-              <>
-                <div className={styles.classes} role="group" aria-label="Class">
-                  {classNums.map((number) => (
-                    <ClassChip key={number} selected={number === classNum} onClick={() => setClassNum(number)}>
-                      Class {number}
-                    </ClassChip>
+            <div className={styles.body} key={step}>
+              {step === 1 && (
+                <div className={styles.animals} role="group" aria-label="Animals">
+                  {animals.map((animal) => (
+                    <AvatarOption key={animal.id} animal={animal} selected={animal.id === animalId} onClick={() => pickAnimal(animal.id)} />
                   ))}
                 </div>
-                <p className={`caption ${styles.helper}`}>Your teacher can change this later.</p>
-              </>
-            )}
-          </div>
+              )}
 
-          <div className={styles.actions}>
-            <Button variant="outline" icon={<ArrowLeft aria-hidden="true" />} onClick={back}>
-              Back
-            </Button>
-            <Button type="submit" disabled={!canGoOn}>
-              {step === 3 ? 'Start learning' : 'Next'}
-            </Button>
-          </div>
-        </form>
-      </Card>
+              {step === 2 && animalId && (
+                <>
+                  <Avatar animal={animalOf(animalId)} />
+                  <NameInput
+                    value={name}
+                    error={nameTaken ? 'Someone on this laptop already has this name.' : undefined}
+                    onChange={(event) => {
+                      setName(event.target.value)
+                      setTyped(true)
+                    }}
+                  />
+                  <Button variant="ghost" icon={<Dices aria-hidden="true" />} onClick={surprise}>
+                    Surprise Me
+                  </Button>
+                </>
+              )}
+
+              {step === 3 && (
+                <>
+                  <div className={styles.classes} role="group" aria-label="Class">
+                    {classNums.map((number) => (
+                      <ClassChip key={number} selected={number === classNum} onClick={() => setClassNum(number)}>
+                        Class {number}
+                      </ClassChip>
+                    ))}
+                  </div>
+                  <p className={`caption ${styles.helper}`}>Your teacher can change this later.</p>
+                </>
+              )}
+            </div>
+
+            <div className={styles.actions}>
+              <Button variant="outline" icon={<ArrowLeft aria-hidden="true" />} onClick={back}>
+                Back
+              </Button>
+              <Button type="submit" disabled={!canGoOn}>
+                {step === 3 ? 'Start Learning' : 'Next'}
+              </Button>
+            </div>
+          </form>
+        </Card>
+      </div>
     </main>
   )
 }

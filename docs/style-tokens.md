@@ -12,10 +12,10 @@ Motion is parked until the team decides whether there will be a mascot.
 
 | Token | Hex | Use |
 |---|---|---|
-| `purple` | `#9347DD` | Primary buttons, active states, links, focus ring |
+| `purple` | `#9347DD` | Primary buttons, the mic, active states, links, focus ring |
 | `purple-dark` | `#7E3CBE` | Hover and pressed on purple, mic while listening |
 | `lilac` | `#EDE2FA` | Selected rows, selected avatar, highlights |
-| `pink` | `#FF3181` | Key-term and input underline only |
+| `pink` | `#FF3181` | Name-input underline only |
 | `green` | `#68B506` | Success, progress |
 | `green-text` | `#3F7A00` | Success text on white |
 | `orange` | `#FF7A00` | Accent |
@@ -148,7 +148,7 @@ Weights: Baloo 2 uses 800 for h1 to h4 and 700 for h5 and h6. Synonym uses 400 f
 
 - Nothing goes below 12.
 - Titles use `text-wrap: balance` and paragraphs use `text-wrap: pretty`.
-- Key terms in answers get a 3px `pink` bottom border, not an underline.
+- Key terms in answers are weight 500, with no underline and no border, so they never look like links.
 - Answer text has a max line length of 68ch.
 - Hindi text may need 16 / 28 instead of 16 / 24 because of the matras. Set it with `:lang(hi)` once tested.
 - Students can zoom text to 1.5× or more.
@@ -180,7 +180,7 @@ Padding and margins use only these values. Component heights are multiples of 8 
 |---|---|---|
 | `border-1` | 1px | Default: cards, chips, inputs, dividers, outline buttons (`gray-200` or `gray-300`) |
 | `border-2` | 2px | Emphasis: focused input, selected card, dashed "Add profile" card, error |
-| `border-3` | 3px | Focus ring (`purple`, 2px offset), key-term and name-input underline (`pink`) |
+| `border-3` | 3px | Focus ring (`purple`, 2px offset), name-input underline (`pink`) |
 
 ---
 
@@ -230,18 +230,26 @@ Outline style, 2px stroke at every size, colour `gray-900` by default or the col
 
 Parked until the mascot decision. Until then, UI transitions use 200ms ease-out and animate only `transform` and `opacity`.
 
+The mic has two loops, both `transform` and `opacity` only: a soft `purple` ripple that spreads from its edge at rest, to show it is ready, and the `white-60` rings while it listens. With reduced motion the ripple is hidden and the rings stay still.
+
+On Welcome the globe drifts slowly up and down over the open book: `transform` only, two and a half `motion-pulse` each way. With reduced motion it stays still.
+
 ---
 
 ## 11. Components in tokens
 
+Button labels are in Title Case, every word capitalised: "Start Asking", "Make It Simpler". Everything else stays in sentence case.
+
 | Component | Spec |
 |---|---|
 | Primary button | Height 48 · `radius-pill` · `purple` · `text` 700 `white` · padding 0 24 · hover `purple-dark` |
+| Welcome button | The primary button on the centred Welcome only · height 64 · padding 0 48 · `text-lg` 700 · `elevation-3` · on purple (Bold): `white` with `purple-dark` words, hover `lilac`, focus ring `white` · on `bg` (Calm): `purple` with `white` words, hover `purple-dark` |
 | Outline button | Height 48 · `radius-pill` · `white` · `border-1` `gray-300` · `text` 700 `gray-900` · `elevation-1` |
 | Ghost button | Height 40 · `radius-pill` · no fill · `border-1` `gray-300` · `text-sm` 700 `gray-700` |
+| Text button | Height 40 · no border, no fill · `text-sm` 700 `gray-700` · padding 0 8 · hover `ink-tint` fill with `gray-900` text · for the actions under an answer and the way into typing |
 | Icon button | 40 circle · hover `gray-100` |
-| Mic, composer | 64 circle · `ink` · icon 24 `white` · `elevation-4` · listening: `purple-dark` + `white-60` rings |
-| Mic, empty state | 112 circle, same styling |
+| Mic, docked | 64 circle · `purple` · icon 24 `white` · `elevation-4` · at rest: soft `purple` ripple · listening: `purple-dark` + `white-60` rings · while an answer is worked on: `gray-200` with a `gray-400` icon |
+| Mic, empty state | 128 circle · icon 32 · same styling |
 | Chip | Height 32 · `radius-pill` · `border-1` `gray-200` · `text-sm` 500 `gray-700` · padding 0 16 |
 | Input | Height 48 · `radius-8` · `border-1` `gray-300` · focus `border-2` `purple` · padding 0 16 |
 | Name input | `h3` Baloo 2 `purple` · centred · `border-3` `pink` bottom |
@@ -252,9 +260,10 @@ Parked until the mascot decision. Until then, UI transitions use 200ms ease-out 
 | Sidebar | 280 wide · `white` · `border-1` `gray-200` on the right · padding 16 |
 | History row | Height 40 · `radius-8` · padding 0 16 · `text-sm` · hover `gray-100` · active `lilac` with `purple-dark` text |
 | Student message | `lilac` · `16 16 8 16` · padding 16 · `text` |
-| Tutor answer | No bubble · `text` 400 · `h5` and `h6` for headings · max 68ch |
+| Tutor answer | No bubble · `text` 400 · `h5` and `h6` for headings · key terms 500 · max 68ch · text buttons under it |
 | Source chip | Chip style · book icon · e.g. "NCERT · Class 8 Science · Ch 3" |
-| Composer | `radius-24` · `white` · `elevation-3` · padding 16 · max width 720 |
+| Composer | The text box, shown only once the student asks to type · `radius-24` · `white` · `elevation-3` · padding 8 · max width 720 · while typing: `border-2` `purple` on the box, no highlight on the field inside |
+| Status banner | Status pair · as wide as its words, never stretched · icon 24 · `text` 500 · `radius-16` · optional ghost button 48 from the words |
 | Dialog | `radius-24` · `white` · padding 32 · `elevation-4` · `scrim` behind |
 | Focus ring | `border-3` `purple`, 2px offset, on every focusable element |
 

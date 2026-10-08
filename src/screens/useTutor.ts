@@ -1,4 +1,4 @@
-import { Hourglass, PenLine, Search } from 'lucide-react'
+import { BookOpenCheck, Hourglass, PenLine, Search } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ThinkingStep } from '../components/ThinkingSteps.tsx'
 import { model } from '../services/model.ts'
@@ -90,12 +90,16 @@ export function useTutor(options: Options) {
           return
         }
         source = result.source
-        // The finished search step says where the answer will come from.
+        // The finished search step says where the answer will come from,
+        // and keeps a book for its icon.
         const searched = steps.at(-1)
-        if (searched && source) searched.label = sourceFound(source)
+        if (searched && source) {
+          searched.label = sourceFound(source)
+          searched.doneIcon = BookOpenCheck
+        }
       }
 
-      start('Writing the answer', PenLine)
+      start(simpler ? 'Putting it into simpler words' : 'Putting it into simple words', PenLine)
       const text = await model.generate(question, source, { simpler: simpler !== undefined })
       if (!live()) return
       say({ text, source, simpler: simpler !== undefined })

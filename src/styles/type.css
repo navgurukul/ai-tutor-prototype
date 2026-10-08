@@ -1,5 +1,6 @@
 /* One class per type step, from section 4 of docs/style-tokens.md. */
 
+.display,
 .h1,
 .h2,
 .h3,
@@ -9,6 +10,12 @@
   font-family: var(--font-heading);
   color: var(--gray-900);
   text-wrap: balance;
+}
+
+.display {
+  font-size: var(--display-size);
+  line-height: var(--display-line);
+  font-weight: var(--weight-heavy);
 }
 
 .h1 {

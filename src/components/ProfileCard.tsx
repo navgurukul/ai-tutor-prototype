@@ -19,7 +19,7 @@ export function AddProfileCard({ className, type = 'button', ...rest }: ButtonHT
   return (
     <button type={type} className={[styles.card, styles.add, className].filter(Boolean).join(' ')} data-inspect="AddProfileCard" {...rest}>
       <Plus aria-hidden="true" />
-      <span className="text weight-bold">New profile</span>
+      <span className="text weight-bold">New Profile</span>
     </button>
   )
 }

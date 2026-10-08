@@ -2,7 +2,7 @@ import styles from './MessageStudent.module.css'
 
 type Props = {
   children: string
-  // The small follow-up, like "Explain it simpler".
+  // The small follow-up, like "Make it simpler".
   small?: boolean
 }
 

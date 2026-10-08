@@ -1,29 +1,23 @@
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, Mic } from 'lucide-react'
 import type { FormEvent, KeyboardEvent, Ref } from 'react'
-import Button from './Button.tsx'
 import IconButton from './IconButton.tsx'
-import MicButton from './MicButton.tsx'
 import styles from './Composer.module.css'
 
 type Props = {
   value: string
   onChange: (value: string) => void
   onSend: () => void
-  onMic: () => void
-  onCancel?: () => void
-  listening?: boolean
-  // What has been heard so far, while listening.
-  transcript?: string
+  // Goes back to speaking. Left out where a mic is already on screen.
+  onSpeak?: () => void
   // True while an answer is being worked on: the student can still type.
   busy?: boolean
-  // A short line under the field, e.g. "I didn't catch that. Try again."
-  hint?: string
-  // The text field and the mic, so a screen can move focus to them.
+  // The text field, so a screen can move focus to it.
   inputRef?: Ref<HTMLTextAreaElement>
-  micRef?: Ref<HTMLButtonElement>
 }
 
-export default function Composer({ value, onChange, onSend, onMic, onCancel, listening = false, transcript = '', busy = false, hint, inputRef, micRef }: Props) {
+// The box for typing a question. Speaking comes first, so this only shows
+// once the student asks to type.
+export default function Composer({ value, onChange, onSend, onSpeak, busy = false, inputRef }: Props) {
   const canSend = !busy && value.trim() !== ''
 
   function submit(event: FormEvent) {
@@ -41,40 +35,26 @@ export default function Composer({ value, onChange, onSend, onMic, onCancel, lis
 
   return (
     <form className={styles.composer} onSubmit={submit} data-inspect="Composer">
-      <MicButton ref={micRef} listening={listening} busy={busy} onClick={onMic} />
-
-      <div className={styles.field}>
-        {listening ? (
-          <>
-            {transcript && <p className={`text-lg ${styles.transcript}`}>{transcript}</p>}
-            <p className={`caption ${styles.hint}`}>Listening. Tap again to send.</p>
-          </>
-        ) : (
-          <>
-            <textarea
-              className={styles.input}
-              ref={inputRef}
-              rows={1}
-              value={value}
-              onChange={(event) => onChange(event.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder="Type your question"
-              aria-label="Type your question"
-            />
-            {hint && <p className={`caption ${styles.hint}`}>{hint}</p>}
-          </>
-        )}
-      </div>
-
-      {listening ? (
-        <Button variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-      ) : (
-        <IconButton type="submit" variant="filled" label="Send" disabled={!canSend}>
-          <ArrowUp aria-hidden="true" />
+      {onSpeak && (
+        <IconButton label="Speak Instead" className={styles.speak} onClick={onSpeak}>
+          <Mic aria-hidden="true" />
         </IconButton>
       )}
+
+      <textarea
+        className={styles.input}
+        ref={inputRef}
+        rows={1}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder="Type your question"
+        aria-label="Type your question"
+      />
+
+      <IconButton type="submit" variant="filled" label="Send" disabled={!canSend}>
+        <ArrowUp aria-hidden="true" />
+      </IconButton>
     </form>
   )
 }

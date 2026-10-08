@@ -99,6 +99,11 @@
   font-weight: var(--weight-medium);
 }
 
+/* Two pickers side by side need air between them. */
+.frame + .frame {
+  margin-left: var(--space-2);
+}
+
 .select {
   height: var(--size-32);
   padding: 0 var(--space-2);

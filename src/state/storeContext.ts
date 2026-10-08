@@ -5,7 +5,7 @@ import type { AppState, Chat } from './types.ts'
 export type Store = {
   state: AppState
   dispatch: Dispatch<Action>
-  // Runs the memory check again and updates the banner. Resolves to "low".
+  // Runs the memory check now and updates the warning. Resolves to "low".
   checkMemory: () => Promise<boolean>
 }
 

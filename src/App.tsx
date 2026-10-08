@@ -15,25 +15,28 @@ import CreateProfile from './screens/CreateProfile.tsx'
 import ProfilePicker from './screens/ProfilePicker.tsx'
 import ScreenLayout from './screens/ScreenLayout.tsx'
 import Welcome from './screens/Welcome.tsx'
+import { asWelcomeLook, type WelcomeLook } from './screens/welcomeLooks.ts'
 import StoreProvider from './state/store.tsx'
 import { useStore } from './state/storeContext.ts'
 
 // A laptop with no profiles is on its first launch. After that, every launch
 // opens the profile picker.
-function Start() {
+function Start({ welcomeLook }: { welcomeLook: WelcomeLook }) {
   const { state } = useStore()
-  return state.profiles.length === 0 ? <Welcome /> : <ProfilePicker />
+  return state.profiles.length === 0 ? <Welcome look={welcomeLook} /> : <ProfilePicker />
 }
 
 function Shell() {
   const [frameId, setFrameId] = useStored('frame', 'fit')
+  const [storedLook, setWelcomeLook] = useStored<WelcomeLook>('welcome', 'centred-bold')
+  const welcomeLook = asWelcomeLook(storedLook)
   const frame = frames.find((item) => item.id === frameId) ?? frames[0]
   const fixed = frame.width !== undefined
   const inspect = useInspect()
 
   return (
     <div className={styles.shell}>
-      <PrototypeBar frameId={frame.id} onFrame={setFrameId} />
+      <PrototypeBar frameId={frame.id} onFrame={setFrameId} welcomeLook={welcomeLook} onWelcomeLook={setWelcomeLook} />
       <div className={styles.body}>
         <div className={fixed ? `${styles.stage} ${styles.stageFixed}` : styles.stage}>
           {/* The app. Everything outside this element is prototype tooling. */}
@@ -46,7 +49,10 @@ function Shell() {
             <div className={styles.scroller}>
               <Routes>
                 <Route element={<ScreenLayout />}>
-                  <Route path="/" element={<Start />} />
+                  <Route path="/" element={<Start welcomeLook={welcomeLook} />} />
+                  {/* Prototype only: Welcome on its own, so its looks can be
+                      compared on a laptop that already has profiles. */}
+                  <Route path="/welcome" element={<Welcome look={welcomeLook} />} />
                   <Route path="/new-profile" element={<CreateProfile />} />
                   <Route path="/chat" element={<Chat />} />
                 </Route>

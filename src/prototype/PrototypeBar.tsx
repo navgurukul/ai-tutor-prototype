@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { APP_NAME, PROTOTYPE_VERSION } from '../config.ts'
 import { useInspect } from '../inspect/inspectContext.ts'
+import { welcomeLooks, type WelcomeLook } from '../screens/welcomeLooks.ts'
+import { useStore } from '../state/storeContext.ts'
 import FrameSizer from './FrameSizer.tsx'
 import ScenarioPanel from './ScenarioPanel.tsx'
 import { useScenarios } from './useScenarios.ts'
@@ -13,16 +15,33 @@ const pages = [
   { to: '/prototype/components', label: 'Components' },
 ]
 
-type Props = { frameId: string; onFrame: (id: string) => void }
+type Props = {
+  frameId: string
+  onFrame: (id: string) => void
+  welcomeLook: WelcomeLook
+  onWelcomeLook: (look: WelcomeLook) => void
+}
 
 // Prototype tooling only: none of this ships in the real app.
-export default function PrototypeBar({ frameId, onFrame }: Props) {
+export default function PrototypeBar({ frameId, onFrame, welcomeLook, onWelcomeLook }: Props) {
   const inspect = useInspect()
   const [scenariosOpen, setScenariosOpen] = useState(false)
   const closeScenarios = useCallback(() => setScenariosOpen(false), [])
   const active = Object.values(useScenarios()).filter(Boolean).length
   // Every screen the student sees lives outside /prototype.
-  const inApp = !useLocation().pathname.startsWith('/prototype')
+  const { pathname } = useLocation()
+  const inApp = !pathname.startsWith('/prototype')
+  const navigate = useNavigate()
+  const { state } = useStore()
+
+  // Picking a look also shows it. Welcome is only at the start on a first
+  // launch, so a laptop that has profiles gets it at its own address.
+  function pickWelcomeLook(look: WelcomeLook) {
+    onWelcomeLook(look)
+    const showing = pathname === '/welcome' || (pathname === '/' && state.profiles.length === 0)
+    if (!showing) navigate('/welcome')
+  }
+
   return (
     <header className={styles.bar} data-inspector-ui>
       <NavLink to="/" className={styles.title}>
@@ -32,6 +51,20 @@ export default function PrototypeBar({ frameId, onFrame }: Props) {
 
       <nav className={styles.tools} aria-label="Prototype tools">
         <FrameSizer frameId={frameId} onChange={onFrame} />
+        <label className={styles.frame}>
+          Welcome
+          <select
+            className={styles.select}
+            value={welcomeLook}
+            onChange={(event) => pickWelcomeLook(event.target.value as WelcomeLook)}
+          >
+            {welcomeLooks.map((look) => (
+              <option key={look.id} value={look.id}>
+                {look.label}
+              </option>
+            ))}
+          </select>
+        </label>
         <button
           type="button"
           className={inspect.enabled ? `${styles.item} ${styles.on}` : styles.item}

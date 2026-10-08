@@ -1,16 +1,13 @@
-import { ArrowUp } from 'lucide-react'
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Keyboard } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import Button from '../components/Button.tsx'
-import { Chip } from '../components/Chip.tsx'
 import Composer from '../components/Composer.tsx'
-import IconButton from '../components/IconButton.tsx'
-import Input from '../components/Input.tsx'
 import MessageStudent from '../components/MessageStudent.tsx'
 import MicButton from '../components/MicButton.tsx'
 import StatusBanner from '../components/StatusBanner.tsx'
 import ThinkingSteps from '../components/ThinkingSteps.tsx'
 import TutorAnswer from '../components/TutorAnswer.tsx'
-import { suggestionsFor } from '../data/answers.ts'
+import { samplesFor } from '../data/answers.ts'
 import { speech } from '../services/speech.ts'
 import { placeholderTitle } from '../services/titles.ts'
 import { useStore } from '../state/storeContext.ts'
@@ -25,7 +22,7 @@ const MISSED = 'I didn’t catch that. Try again.'
 const studentMessage = (text: string): Message => ({ id: newId(), role: 'student', text, at: Date.now() })
 
 // The small message the app adds when the student asks for easier words.
-const simplerMessage = (about: string): Message => ({ id: newId(), role: 'student', text: 'Explain it simpler', small: true, about, at: Date.now() })
+const simplerMessage = (about: string): Message => ({ id: newId(), role: 'student', text: 'Make it simpler', small: true, about, at: Date.now() })
 
 // The question that led to a message: the nearest one the student asked before it.
 function questionBefore(messages: Message[], id: string): string {
@@ -49,26 +46,26 @@ type Props = {
   onIdle: () => void
 }
 
-// One chat: the empty state with the big mic, or the messages with the
-// composer docked under them.
+// One chat: the empty state with the big mic, or the messages with a smaller
+// mic docked under them. Either way the mic leads and typing is one step away.
 export default function Conversation({ profile, chat, onCreated, onAsk, onSettled, onIdle }: Props) {
   const { state, dispatch } = useStore()
   const messages = chat?.messages ?? []
   const empty = messages.length === 0
-  const suggestions = suggestionsFor(profile.classNum)
 
-  // What is typed, shared by the quiet field on the empty chat and the composer.
   const [draft, setDraft] = useState('')
-  const quietField = useRef<HTMLInputElement>(null)
-  const composerField = useRef<HTMLTextAreaElement>(null)
-  // Whichever mic is on screen: the big one or the one in the composer.
+  // The text box shows only once the student asks to type, and then stays
+  // for the rest of this chat.
+  const [typing, setTyping] = useState(false)
+  const field = useRef<HTMLTextAreaElement>(null)
+  // Whichever mic is on screen: the big one or the one under the messages.
   const micButton = useRef<HTMLButtonElement>(null)
   // Set each time keyboard focus should move, so it never ends up on a
   // control that has just gone away.
   const [focusMove, setFocusMove] = useState<{ to: 'field' | 'mic' } | null>(null)
   useEffect(() => {
     if (focusMove?.to === 'mic') micButton.current?.focus()
-    if (focusMove?.to === 'field') (composerField.current ?? quietField.current)?.focus()
+    if (focusMove?.to === 'field') field.current?.focus()
   }, [focusMove])
 
   // Voice comes first: a student who arrives with nothing in focus starts
@@ -118,13 +115,6 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     if (settled && chat) onSettled(chat)
   }, [settled, chat, onSettled])
 
-  // New messages and new steps are always in view.
-  const scroller = useRef<HTMLDivElement>(null)
-  const stepCount = tutor.thinking?.steps.length
-  const slow = tutor.thinking?.slow
-  useEffect(() => {
-    if (scroller.current) scroller.current.scrollTop = scroller.current.scrollHeight
-  }, [messages.length, stepCount, slow, failed])
 
   function ask(chatId: string, question: string, simpler?: Source) {
     // The student has moved on, so the tutor stops reading the last answer.
@@ -151,17 +141,20 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     ask(chatId, question)
     setDraft('')
     mic.forget()
-    // The control that sent it may be about to go: carry on from the
-    // composer, on the mic for a spoken question and in the field for a typed one.
+    // The control that sent it may be about to go: carry on from the mic
+    // for a spoken question and from the text box for a typed one.
+    if (by === 'mic') setTyping(false)
     setFocusMove({ to: by === 'mic' ? 'mic' : 'field' })
   }
 
   const mic = useListening({
     // With Fake mic on, a question from this class that hasn't been asked yet.
-    sample: suggestions.find((question) => !messages.some((message) => message.text === question)),
+    sample: samplesFor(profile.classNum).find((question) => !messages.some((message) => message.text === question)),
     onSend: (question) => send(question, 'mic'),
+    // The words go to the text box, which opens so they can be fixed.
     onTimeUp(transcript) {
       setDraft(`${draft} ${transcript}`.trim())
+      setTyping(true)
       setFocusMove({ to: 'field' })
     },
     // The Cancel button goes away, so focus goes back to the idle mic.
@@ -171,10 +164,34 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
   // Waiting for an answer, speaking and listening are all use of the laptop.
   useIdleReturn(busy || mic.listening || speakingId !== null, onIdle)
 
+  // Words have been heard and are on screen.
+  const hearing = mic.listening && mic.transcript !== ''
+
+  // New messages and new steps are always in view, and stay there when the
+  // space under them changes height.
+  const scroller = useRef<HTMLDivElement>(null)
+  const stepCount = tutor.thinking?.steps.length
+  const slow = tutor.thinking?.slow
+  useEffect(() => {
+    if (scroller.current) scroller.current.scrollTop = scroller.current.scrollHeight
+  }, [messages.length, stepCount, slow, failed, hearing, typing])
+
   // Tapping the mic while the tutor is speaking stops the speech at once.
   function tapMic() {
     if (!mic.listening) speech.cancel()
     mic.toggle()
+  }
+
+  function startTyping() {
+    setTyping(true)
+    setFocusMove({ to: 'field' })
+  }
+
+  // The small mic in the text box: back to the mic, already listening.
+  function speakInstead() {
+    setTyping(false)
+    setFocusMove({ to: 'mic' })
+    if (!busy) tapMic()
   }
 
   function explainSimpler(answer: Message) {
@@ -190,69 +207,73 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     if (about?.role === 'tutor' && about.source) ask(chat.id, questionBefore(messages, about.id), about.source)
     else ask(chat.id, questionBefore(messages, last.id))
     // The banner and its button are about to go.
-    setFocusMove({ to: 'field' })
+    setFocusMove({ to: typing ? 'field' : 'mic' })
   }
 
-  function submitQuiet(event: FormEvent) {
-    event.preventDefault()
-    send(draft)
-  }
+  const layer = (shown: boolean) => (shown ? styles.layer : `${styles.layer} ${styles.away}`)
+
+  // Nothing while an answer is on its way: the mic is off until it lands.
+  const micCaption = mic.listening ? 'Listening. Tap again to send.' : mic.missed ? MISSED : busy ? '' : 'Tap to speak'
+
+  const micBlock = (size: 'docked' | 'empty') => (
+    <div className={styles.micBlock}>
+      <MicButton ref={micButton} size={size} listening={mic.listening} busy={busy} onClick={tapMic} />
+      <p className={`caption ${styles.micCaption}`} role="status">
+        {micCaption}
+      </p>
+    </div>
+  )
+
+  const textBox = (onSpeak?: () => void) => (
+    <Composer value={draft} onChange={setDraft} onSend={() => send(draft)} onSpeak={onSpeak} busy={busy} inputRef={field} />
+  )
+
+  // Under the mic: the way into typing, or Cancel while listening. Both
+  // layers share one space, so swapping them moves nothing.
+  const underMic = (
+    <div className={styles.below}>
+      <div className={layer(!mic.listening)}>
+        {typing ? (
+          <div className={styles.typeBox}>{textBox()}</div>
+        ) : (
+          <div className={`text-sm ${styles.typeInstead}`}>
+            <span>Can’t speak right now?</span>
+            <Button variant="text" icon={<Keyboard aria-hidden="true" />} onClick={startTyping}>
+              Type Your Question
+            </Button>
+          </div>
+        )}
+      </div>
+      <div className={layer(mic.listening)}>
+        <Button variant="ghost" onClick={mic.cancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
+  )
+
+  const heard = (
+    <div className={`text-lg ${styles.heard}`}>
+      <p>{mic.transcript}</p>
+    </div>
+  )
 
   if (empty) {
     return (
       <div className={styles.empty}>
         <div className={styles.emptyColumn}>
+          {/* The student's own words take the place of the question as they
+              are heard, in the same space, so the mic never moves. */}
           <div className={styles.greeting}>
-            <h1 className="h2">Hi, {profile.name}</h1>
-            {/* Two lines tall whatever it holds, so the mic never moves. */}
-            <div className={styles.slot}>
-              {mic.listening ? (
-                <p className={`text-lg ${styles.transcript}`}>{mic.transcript}</p>
-              ) : (
-                <p className={`text-lg ${styles.prompt}`}>What do you want to understand today?</p>
-              )}
+            <div className={layer(!hearing)}>
+              <p className={`text-lg ${styles.hello}`}>Hi, {profile.name}</p>
+              <h1 className="h2">What do you want to understand today?</h1>
             </div>
+            <div className={layer(hearing)}>{heard}</div>
           </div>
 
-          <div className={styles.micBlock}>
-            <MicButton ref={micButton} size="empty" listening={mic.listening} onClick={tapMic} />
-            <p className={`caption ${styles.micCaption}`} role="status">
-              {mic.listening ? 'Listening. Tap again to send.' : mic.missed ? MISSED : 'Tap to speak'}
-            </p>
-          </div>
-
-          {/* Both layers share one space, so swapping them moves nothing. */}
-          <div className={styles.below}>
-            <div className={mic.listening ? `${styles.layer} ${styles.away}` : styles.layer}>
-              {suggestions.length > 0 && (
-                <ul className={styles.chips} aria-label="Questions you could ask">
-                  {suggestions.map((question) => (
-                    <li key={question}>
-                      <Chip onClick={() => send(question)}>{question}</Chip>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <form className={styles.quiet} onSubmit={submitQuiet}>
-                <Input
-                  ref={quietField}
-                  value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
-                  placeholder="Or type your question"
-                  aria-label="Type your question"
-                  autoComplete="off"
-                />
-                <IconButton type="submit" variant="filled" label="Send" disabled={draft.trim() === ''}>
-                  <ArrowUp aria-hidden="true" />
-                </IconButton>
-              </form>
-            </div>
-            <div className={mic.listening ? styles.layer : `${styles.layer} ${styles.away}`}>
-              <Button variant="ghost" className={styles.cancel} onClick={mic.cancel}>
-                Cancel
-              </Button>
-            </div>
-          </div>
+          {micBlock('empty')}
+          {underMic}
         </div>
       </div>
     )
@@ -283,26 +304,24 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
           )}
           {tutor.thinking && <ThinkingSteps steps={tutor.thinking.steps} slow={tutor.thinking.slow} />}
           {failed && (
-            <StatusBanner tone="error" action={{ label: 'Try again', onClick: tryAgain }}>
+            <StatusBanner tone="error" action={{ label: 'Try Again', onClick: tryAgain }}>
               Something went wrong.
             </StatusBanner>
           )}
         </div>
       </div>
+      {/* Docked under the messages: the mic, or the text box once the
+          student has asked to type. */}
       <div className={styles.dock}>
-        <Composer
-          value={draft}
-          onChange={setDraft}
-          onSend={() => send(draft)}
-          onMic={tapMic}
-          onCancel={mic.cancel}
-          listening={mic.listening}
-          transcript={mic.transcript}
-          busy={busy}
-          hint={mic.missed ? MISSED : undefined}
-          inputRef={composerField}
-          micRef={micButton}
-        />
+        {typing ? (
+          textBox(speakInstead)
+        ) : (
+          <div className={styles.voice}>
+            {hearing && heard}
+            {micBlock('docked')}
+            {underMic}
+          </div>
+        )}
       </div>
     </>
   )

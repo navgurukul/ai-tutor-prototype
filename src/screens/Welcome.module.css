@@ -1,36 +1,202 @@
+/* Two layouts, each in two colours. Two panels puts the words on the left
+   and the picture on the right. Centred, at the end of this file, puts
+   everything on one centre line with a shelf of books along the bottom.
+   Calm sits on the app background; bold fills the window with purple. */
 .welcome {
   display: flex;
-  flex-direction: column;
+  flex: 1 0 auto;
   align-items: center;
-  gap: var(--space-5);
+  justify-content: center;
+  padding: var(--space-6) var(--space-8);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  align-items: center;
+  gap: var(--space-7);
   width: 100%;
-  max-width: calc(var(--size-112) * 5);
-  padding: var(--space-8) var(--space-5);
-  text-align: center;
-  box-shadow: var(--elevation-1);
+  max-width: calc(var(--size-96) * 12);
 }
 
 .words {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
   gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.brand svg {
+  width: var(--icon-24);
+  height: var(--icon-24);
 }
 
 .tagline {
+  max-width: calc(var(--size-112) * 4);
+  margin-top: var(--space-3);
   color: var(--gray-700);
+  text-wrap: balance;
+}
+
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.welcome .cta {
+  padding: 0 var(--space-5);
+  box-shadow: var(--elevation-3);
 }
 
 .offline {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--success-bg);
-  color: var(--success-text);
+  color: var(--gray-500);
 }
 
 .offline svg {
   width: var(--icon-16);
   height: var(--icon-16);
+}
+
+.art {
+  justify-self: end;
+  width: 100%;
+  height: auto;
+}
+
+.letter {
+  fill: var(--ink);
+  font-family: var(--font-heading);
+  font-weight: var(--weight-heavy);
+}
+
+.backdrop {
+  fill: var(--green-tint);
+}
+
+/* Bold: white words and a white button on purple. */
+.bold {
+  background: var(--purple);
+}
+
+/* Keeps the purple off the low-memory warning above it. */
+.bold.underBanner {
+  margin-top: var(--space-3);
+}
+
+.bold .brand,
+.bold .heading,
+.bold .tagline,
+.bold .offline {
+  color: var(--white);
+}
+
+.bold .backdrop {
+  fill: var(--purple-dark);
+}
+
+.welcome.bold .cta {
+  background: var(--white);
+  color: var(--purple-dark);
+}
+
+.welcome.bold .cta:hover,
+.welcome.bold .cta:active {
+  background: var(--lilac);
+}
+
+/* The purple ring can't be seen on purple. */
+.welcome.bold .cta:focus-visible {
+  outline-color: var(--white);
+}
+
+/* A narrower window: the heading drops a step so its two lines still fit. */
+@container app (max-width: 1199px) {
+  .welcome {
+    padding: var(--space-5) var(--space-7);
+  }
+
+  .inner {
+    gap: var(--space-5);
+  }
+
+  .welcome .heading {
+    font-size: var(--h1-size);
+    line-height: var(--h1-line);
+  }
+}
+
+/* Centred: the name at the top, the words in the middle of the space that is
+   left, the shelf standing on the bottom edge of the window. */
+.welcome.centred {
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: var(--space-5) 0 0;
+  text-align: center;
+}
+
+.centred .brand {
+  margin-bottom: 0;
+}
+
+.centred .words {
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.centred .heading {
+  text-wrap: balance;
+}
+
+.centred .tagline {
+  max-width: none;
+}
+
+.centred .start {
+  align-items: center;
+}
+
+/* The one thing to press, so it is a step bigger than a normal button and
+   the picture below does not outweigh it. */
+.welcome.centred .cta {
+  height: var(--size-64);
+  padding: 0 var(--space-7);
+  font-size: var(--text-lg-size);
+  line-height: var(--text-lg-line);
+}
+
+/* Narrower than the window, so the books read as one group in the middle. */
+.shelf {
+  display: block;
+  flex: none;
+  width: 72%;
+  max-width: calc(var(--size-96) * 12);
+  height: auto;
+}
+
+/* The shelf the books stand on. It runs the full width of the window. */
+.centred::after {
+  content: '';
+  flex: none;
+  align-self: stretch;
+  height: var(--space-5);
+  border-top: var(--border-3) solid var(--ink);
+  background: var(--green-tint);
+}
+
+.centred.bold::after {
+  background: var(--purple-dark);
 }

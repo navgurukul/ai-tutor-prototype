@@ -26,7 +26,7 @@ export default function VoiceControl({ voiceOn, speed, onVoice, onSpeed }: Props
         icon={voiceOn ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
         onClick={() => onVoice(!voiceOn)}
       >
-        {voiceOn ? 'Voice on' : 'Voice off'}
+        {voiceOn ? 'Voice On' : 'Voice Off'}
       </Button>
       <div className={styles.speeds} role="group" aria-label="Voice speed">
         {speeds.map((item) => (

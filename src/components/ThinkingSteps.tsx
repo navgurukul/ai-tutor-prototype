@@ -1,12 +1,19 @@
 import { Check, LoaderCircle, type LucideIcon } from 'lucide-react'
 import styles from './ThinkingSteps.module.css'
 
-export type ThinkingStep = { label: string; state: 'current' | 'done'; icon?: LucideIcon }
+export type ThinkingStep = {
+  label: string
+  state: 'current' | 'done'
+  // Shown while the step is the current one.
+  icon?: LucideIcon
+  // Shown once it is done, in place of the tick.
+  doneIcon?: LucideIcon
+}
 
 type Props = {
   // Only the finished steps and the current one. Upcoming steps are not shown.
   steps: ThinkingStep[]
-  // After 10 seconds of waiting.
+  // After 10 seconds of waiting: a line that keeps the student's spirits up.
   slow?: boolean
 }
 
@@ -15,7 +22,7 @@ export default function ThinkingSteps({ steps, slow = false }: Props) {
     <div className={styles.wrap} data-inspect="ThinkingSteps">
       <ol className={styles.steps}>
         {steps.map((step, index) => {
-          const Icon = step.state === 'done' ? Check : (step.icon ?? LoaderCircle)
+          const Icon = step.state === 'done' ? (step.doneIcon ?? Check) : (step.icon ?? LoaderCircle)
           return (
             <li key={index} className={`text-sm ${styles.step} ${styles[step.state]}`}>
               <Icon aria-hidden="true" />
@@ -25,7 +32,7 @@ export default function ThinkingSteps({ steps, slow = false }: Props) {
           )
         })}
       </ol>
-      {slow && <p className={`caption ${styles.slow}`}>Still working. This laptop may take a little longer.</p>}
+      {slow && <p className={`caption ${styles.slow}`}>Still working on it. Just a few more moments.</p>}
     </div>
   )
 }

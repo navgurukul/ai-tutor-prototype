@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import styles from './Button.module.css'
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'outline' | 'ghost'
+  variant?: 'primary' | 'outline' | 'ghost' | 'text'
   icon?: ReactNode
   block?: boolean
   // Off for a short wait. Unlike `disabled`, the button keeps keyboard
@@ -10,7 +10,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   busy?: boolean
 }
 
-const inspectNames = { primary: 'PrimaryButton', outline: 'OutlineButton', ghost: 'GhostButton' }
+const inspectNames = { primary: 'PrimaryButton', outline: 'OutlineButton', ghost: 'GhostButton', text: 'TextButton' }
 
 export default function Button({ variant = 'primary', icon, block, busy = false, className, children, type = 'button', onClick, ...rest }: Props) {
   const classes = [styles.button, styles[variant], block && styles.block, className].filter(Boolean).join(' ')

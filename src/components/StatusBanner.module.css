@@ -2,6 +2,9 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  /* As wide as its words, never stretched across the screen. */
+  width: fit-content;
+  max-width: 100%;
   min-height: var(--size-48);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-16);
@@ -19,7 +22,7 @@
 
 .action {
   flex: none;
-  margin-left: var(--space-2);
+  margin-left: var(--space-6);
   background: var(--white);
 }
 

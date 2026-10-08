@@ -52,30 +52,31 @@ Switch **Inspect** on in the dark bar, or press Alt + I. While it is on, clicks 
 
 The panel shows size, box model, layout, type, colour, shape and contrast. Every value is shown with the token that produces it, like `48 · size-48`. A value that should come from a token but matches none is shown in orange as "not a token". **Copy CSS** copies the element's styles written with `var(--token)` names. The last section of the Components page has a box with hard-coded values to try this on.
 
-**Frame** in the bar draws the app at a fixed size (1366 × 768, 1280 × 720, 1920 × 1080 or 1024 × 640) at true pixels. A frame bigger than the window scrolls.
+**Welcome** in the bar picks which of the four Welcome looks is shown. **Frame** draws the app at a fixed size (1366 × 768, 1280 × 720, 1920 × 1080 or 1024 × 640) at true pixels. A frame bigger than the window scrolls.
 
 ## What works so far
 
 All four flow boards work end to end.
 
 - **First launch:** Welcome, then three profile steps (animal, name, class), then an empty chat.
+- **Welcome, four looks:** two layouts, each in two colours. Centred puts everything on one centre line with a shelf of books along the bottom and a globe that drifts slowly over the open book (mock-up in `docs/feedback/`). Two Panel puts the words on the left and a picture on the right (mock-ups in `docs/welcome-screen/`). Bold fills the window with purple; Calm sits on the app background. Centred Bold is the default. The book and globe from the shelf also stand on the card on the profile steps. **Welcome** in the dark bar switches between them and opens the screen, even on a laptop that already has profiles.
 - **Every launch after that:** the profile picker. Reloading the page counts as a new launch.
 - **Names:** a made-up name like "Brave Owl" is offered, and two profiles on one laptop can never have the same name.
-- **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and press "Check again" to clear it.
-- **Asking:** a question can be sent by voice, by a suggestion chip, or by typing. Tap the mic to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text field instead.
+- **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and the warning goes away by itself: there is no button, the app keeps checking while the warning is up.
+- **Asking:** the mic leads, on the empty chat and under the messages. Tap it to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text box instead. To type, press "Type Your Question" under the mic; the small mic in the text box goes back to speaking.
 - **Fake mic:** switch on **Scenarios → Fake mic** to have a sample question typed out instead of using the microphone. The real microphone needs Chrome or Edge, internet, and permission.
 - **Answering:** thinking steps show under the question and change only when a service finishes. When the search is done, its step says where the answer was found, like "Found it in Science, Chapter 12, page 215". Then the answer appears with its book, chapter and page, and is read aloud if Voice is on.
 - **Not in the books:** when the search finds nothing, the tutor says "I couldn't find this in your Class 6 books. Try asking it another way, or ask your teacher." It never answers from outside the books.
-- **After an answer:** "Hear again" reads it again and turns into "Stop" while the tutor speaks. "Explain simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
-- **Hard paths:** every switch in **Scenarios** changes what happens here: Slow laptop (a "Still working" line after 10 seconds), Cold model ("Getting ready" first), Next search finds nothing, and Next answer fails ("Something went wrong." with "Try again").
-- **Recent chats:** each profile sees only its own chats, most recently used first. Any of them can be opened and continued. "New chat" starts an empty one, which joins the list with its first question.
+- **After an answer:** "Hear Again" reads it again and turns into "Stop" while the tutor speaks. "Make It Simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
+- **Hard paths:** every switch in **Scenarios** changes what happens here: Slow laptop (a "Still working on it" line after 10 seconds), Cold model ("Getting ready" first), Next search finds nothing, and Next answer fails ("Something went wrong." with "Try Again").
+- **Recent chats:** each profile sees only its own chats, most recently used first. Any of them can be opened and continued. "New Chat" starts an empty one, which joins the list with its first question.
 - **Chat titles:** a chat is first named after its question, cut to 40 characters. Once the first answer has been read aloud (or has appeared, with Voice off) a short title replaces it. A new question asked while the title is being written cancels that job, and it runs again after the next answer.
 - **Switch and idle return:** "Switch" goes back to the profile picker and stops the voice. So does 15 minutes with no pointer, keyboard, listening, speaking or waiting for an answer. Switch on **Scenarios → Short idle timer** to make that 30 seconds.
 - **Sidebar:** full at 1200 px and wider, an icon rail from 1024 to 1199 px, and a drawer below 1024 px. Use **Frame** in the dark bar, or resize the window, to see each.
 - **Keyboard:** Tab reaches every control, in the order it is on screen, with a purple focus ring. Space or Enter on the mic starts and stops listening. Esc cancels listening and closes the drawer or a dialog. Focus is never left on a control that has gone away: an empty chat starts on the mic, a spoken question keeps focus on the mic, and a typed one keeps it in the text field.
 - **Reduced motion:** with the system setting on, the mic's rings and the thinking icon stay still and nothing slides or fades.
 
-Only about a dozen questions have a written answer (see `src/data/answers.ts`). To see the first launch again, use **Scenarios → Reset prototype**.
+About 70 questions have a written answer, all for Class 6 and 7 Science and Mathematics. They are listed in [docs/test-questions.md](docs/test-questions.md), with the words that trigger each one. A Class 8 to 12 profile always gets the "couldn't find this" message. To see the first launch again, use **Scenarios → Reset prototype**.
 
 ## Simulated services and scenarios
 
@@ -83,7 +84,7 @@ Nothing real runs behind the prototype. Each real system is faked by one file in
 
 | File | Stands in for | What it does here |
 | --- | --- | --- |
-| `model.ts` | The model, loaded through Ollama | A 5.5 s load, then answers picked by keyword from `src/data/answers.ts` |
+| `model.ts` | The model, loaded through Ollama | A 5.5 s load, then answers picked by keyword from `src/data/answers6.ts` and `answers7.ts` |
 | `memory.ts` | The free-memory check | Reports low only when the scenario says so |
 | `retrieval.ts` | Search in the class's textbooks | Keyword match against `src/data/textbooks.ts`, inside one class only |
 | `speech.ts` | Local speech-to-text and the tutor's voice | The browser's speech recognition and speech synthesis |
@@ -99,7 +100,7 @@ Profiles, chats and settings live in a React context with a reducer (`src/state/
 ### Content still to check
 
 - The chapter names in `textbooks.ts` are the real ones from the current NCERT books, but the **page ranges and page numbers are placeholders** and have not been checked against the printed books.
-- The answers in `answers.ts` have been fact-checked, but not against the textbooks' own wording.
+- The answers in `answers6.ts` and `answers7.ts` have been fact-checked, but not against the textbooks' own wording.
 
 ## Rules for the code
 

@@ -10,7 +10,7 @@ import styles from './ScenarioPanel.module.css'
 
 const switches: { name: ScenarioName; label: string; effect: string }[] = [
   { name: 'slowLaptop', label: 'Slow laptop', effect: 'Every wait takes 3 times longer.' },
-  { name: 'memoryLow', label: 'Memory low', effect: 'Shows the warning. Switch it off, then press Check again to clear it.' },
+  { name: 'memoryLow', label: 'Memory low', effect: 'Shows the warning. Switch it off and the warning goes away.' },
   { name: 'searchFindsNothing', label: 'Next search finds nothing', effect: 'Turns itself off after one search.' },
   { name: 'answerFails', label: 'Next answer fails', effect: 'Turns itself off after one answer.' },
   { name: 'fakeMic', label: 'Fake mic', effect: 'Types out a sample question instead of listening.' },
@@ -47,9 +47,9 @@ export default function ScenarioPanel({ onClose }: { onClose: () => void }) {
 
   function toggle(name: ScenarioName, value: boolean) {
     scenarios.set(name, value)
-    // Switching it on shows the banner on whatever screen is up. Switching it
-    // off is like closing other apps: the banner stays until "Check again".
-    if (name === 'memoryLow' && value) void checkMemory()
+    // Switching it on shows the warning on whatever screen is up. Switching
+    // it off is like closing other apps: the next check clears the warning.
+    if (name === 'memoryLow') void checkMemory()
   }
 
   function reset() {
@@ -93,7 +93,7 @@ export default function ScenarioPanel({ onClose }: { onClose: () => void }) {
           </span>
         </span>
         <Button variant="ghost" onClick={() => void model.restart()}>
-          Load again
+          Load Again
         </Button>
       </div>
 
@@ -114,7 +114,7 @@ export default function ScenarioPanel({ onClose }: { onClose: () => void }) {
         actions={
           <>
             <Button variant="outline" onClick={() => setConfirming(false)}>
-              Keep everything
+              Keep Everything
             </Button>
             <Button onClick={reset}>Reset</Button>
           </>

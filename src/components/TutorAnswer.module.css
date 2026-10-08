@@ -26,14 +26,15 @@
   list-style: disc;
 }
 
-/* Key terms: a pink bottom border, not an underline. */
+/* Key terms: a little heavier, and nothing that looks like a link. */
 .term {
-  border-bottom: var(--border-3) solid var(--pink);
   font-weight: var(--weight-medium);
 }
 
+/* Text buttons, pulled left so their words line up with the answer. */
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
 }
