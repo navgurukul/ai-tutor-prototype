@@ -1,0 +1,74 @@
+/* In ink with white text, so nobody mistakes it for product UI. */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+  height: var(--size-40);
+  padding: 0 var(--space-3);
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-text);
+  white-space: nowrap;
+}
+
+.title {
+  border-radius: var(--radius-8);
+  color: var(--white);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+}
+
+.version {
+  color: var(--white-90);
+  font-size: var(--caption-size);
+  line-height: var(--caption-line);
+  font-weight: var(--weight-medium);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  height: var(--size-32);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--white-90);
+  font-size: var(--text-sm-size);
+  line-height: var(--text-sm-line);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: opacity var(--motion);
+}
+
+.item:hover:not(:disabled),
+.active {
+  background: var(--white-20);
+  color: var(--white);
+}
+
+.item:disabled {
+  color: var(--gray-400);
+}
+
+/* The purple ring is too dark to see on ink, so the bar's ring is white. */
+.bar :focus-visible {
+  outline-color: var(--white);
+}
+
+.divider {
+  width: var(--border-1);
+  height: var(--space-3);
+  margin: 0 var(--space-1);
+  background: var(--white-20);
+}
