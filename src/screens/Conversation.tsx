@@ -14,8 +14,9 @@ import { suggestionsFor } from '../data/answers.ts'
 import { speech } from '../services/speech.ts'
 import { placeholderTitle } from '../services/titles.ts'
 import { useStore } from '../state/storeContext.ts'
-import { newId, sourceDetail, sourceLabel, speechRate, type Chat, type Message, type Profile } from '../state/types.ts'
+import { newId, sourceDetail, sourceLabel, speechRate, type Chat, type Message, type Profile, type Source } from '../state/types.ts'
 import styles from './Conversation.module.css'
+import { useIdleReturn } from './useIdleReturn.ts'
 import { useListening } from './useListening.ts'
 import { useTutor } from './useTutor.ts'
 
@@ -40,11 +41,17 @@ type Props = {
   // Nothing yet on an empty chat: it is made when the first question is sent.
   chat?: Chat
   onCreated: (chatId: string) => void
+  // The tutor is starting on an answer in this chat.
+  onAsk: (chatId: string) => void
+  // The newest answer has appeared and, with Voice on, has been read aloud.
+  onSettled: (chat: Chat) => void
+  // Nobody has used the laptop for the idle limit.
+  onIdle: () => void
 }
 
 // One chat: the empty state with the big mic, or the messages with the
 // composer docked under them.
-export default function Conversation({ profile, chat, onCreated }: Props) {
+export default function Conversation({ profile, chat, onCreated, onAsk, onSettled, onIdle }: Props) {
   const { state, dispatch } = useStore()
   const messages = chat?.messages ?? []
   const empty = messages.length === 0
@@ -94,6 +101,13 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
   const last = messages.at(-1)
   const failed = !busy && last?.role === 'student'
 
+  // The written title waits for a quiet moment, so it never competes with
+  // an answer for the model.
+  const settled = chat !== undefined && !chat.titled && last?.role === 'tutor' && speakingId === null
+  useEffect(() => {
+    if (settled && chat) onSettled(chat)
+  }, [settled, chat, onSettled])
+
   // New messages and new steps are always in view.
   const scroller = useRef<HTMLDivElement>(null)
   const stepCount = tutor.thinking?.steps.length
@@ -101,6 +115,13 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
   useEffect(() => {
     if (scroller.current) scroller.current.scrollTop = scroller.current.scrollHeight
   }, [messages.length, stepCount, slow, failed])
+
+  function ask(chatId: string, question: string, simpler?: Source) {
+    // The student has moved on, so the tutor stops reading the last answer.
+    speech.cancel()
+    onAsk(chatId)
+    void tutor.ask(chatId, question, simpler)
+  }
 
   function send(text: string) {
     const question = text.trim()
@@ -117,9 +138,7 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
       })
       onCreated(chatId)
     }
-    // The student has moved on, so the tutor stops reading the last answer.
-    speech.cancel()
-    void tutor.ask(chatId, question)
+    ask(chatId, question)
     setDraft('')
     mic.forget()
     // The empty chat's controls are about to go: carry on from the composer.
@@ -136,6 +155,9 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
     },
   })
 
+  // Waiting for an answer, speaking and listening are all use of the laptop.
+  useIdleReturn(busy || mic.listening || speakingId !== null, onIdle)
+
   // Tapping the mic while the tutor is speaking stops the speech at once.
   function tapMic() {
     if (!mic.listening) speech.cancel()
@@ -145,16 +167,15 @@ export default function Conversation({ profile, chat, onCreated }: Props) {
   function explainSimpler(answer: Message) {
     if (!chat || busy || answer.role !== 'tutor' || !answer.source) return
     dispatch({ type: 'chat/message', chatId: chat.id, message: simplerMessage(answer.id) })
-    speech.cancel()
-    void tutor.ask(chat.id, questionBefore(messages, answer.id), answer.source)
+    ask(chat.id, questionBefore(messages, answer.id), answer.source)
   }
 
   // Sends the unanswered question again, without repeating it in the chat.
   function tryAgain() {
     if (!chat || last?.role !== 'student') return
     const about = last.small ? messages.find((message) => message.id === last.about) : undefined
-    if (about?.role === 'tutor' && about.source) void tutor.ask(chat.id, questionBefore(messages, about.id), about.source)
-    else void tutor.ask(chat.id, questionBefore(messages, last.id))
+    if (about?.role === 'tutor' && about.source) ask(chat.id, questionBefore(messages, about.id), about.source)
+    else ask(chat.id, questionBefore(messages, last.id))
   }
 
   function submitQuiet(event: FormEvent) {

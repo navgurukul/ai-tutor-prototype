@@ -11,8 +11,6 @@ const pages = [
   { to: '/prototype/flows', label: 'Flows' },
   { to: '/prototype/tokens', label: 'Tokens' },
   { to: '/prototype/components', label: 'Components' },
-  // TEMPORARY: the service test page goes away once the real screens use the services.
-  { to: '/prototype/services', label: 'Services' },
 ]
 
 type Props = { frameId: string; onFrame: (id: string) => void }

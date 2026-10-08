@@ -56,7 +56,7 @@ The panel shows size, box model, layout, type, colour, shape and contrast. Every
 
 ## What works so far
 
-The app opens on the launch flow from flow board 1, then the chat from board 2.
+All four flow boards work end to end.
 
 - **First launch:** Welcome, then three profile steps (animal, name, class), then an empty chat.
 - **Every launch after that:** the profile picker. Reloading the page counts as a new launch.
@@ -67,6 +67,9 @@ The app opens on the launch flow from flow board 1, then the chat from board 2.
 - **Answering:** thinking steps show under the question and change only when a service finishes. Then the answer appears with its book, chapter and page, and is read aloud if Voice is on.
 - **After an answer:** "Hear again" reads it again and turns into "Stop" while the tutor speaks. "Explain simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
 - **Hard paths:** every switch in **Scenarios** changes what happens here: Slow laptop (a "Still working" line after 10 seconds), Cold model ("Getting ready" first), Next search finds nothing, and Next answer fails ("Something went wrong." with "Try again").
+- **Recent chats:** each profile sees only its own chats, most recently used first. Any of them can be opened and continued. "New chat" starts an empty one, which joins the list with its first question.
+- **Chat titles:** a chat is first named after its question, cut to 40 characters. Once the first answer has been read aloud (or has appeared, with Voice off) a short title replaces it. A new question asked while the title is being written cancels that job, and it runs again after the next answer.
+- **Switch and idle return:** "Switch" goes back to the profile picker and stops the voice. So does 15 minutes with no pointer, keyboard, listening, speaking or waiting for an answer. Switch on **Scenarios → Short idle timer** to make that 30 seconds.
 - **Sidebar:** full at 1200 px and wider, an icon rail from 1024 to 1199 px, and a drawer below 1024 px. Use **Frame** in the dark bar, or resize the window, to see each.
 
 Only about a dozen questions have a written answer (see `src/data/answers.ts`). To see the first launch again, use **Scenarios → Reset prototype**.
@@ -87,8 +90,6 @@ Nothing real runs behind the prototype. Each real system is faked by one file in
 Timings copy an 8 GB laptop and vary by 20% either way. Speech recognition in Chrome and Edge needs internet; when it isn't available, a sample question is typed out word by word.
 
 **Scenarios** in the dark bar forces the hard paths: Slow laptop, Memory low, Next search finds nothing, Next answer fails, Fake mic, Short idle timer, Cold model and Reset prototype. Choices are saved in `localStorage`.
-
-**Services** in the dark bar is a temporary test bench that calls each service and logs the result. It will be removed once the real screens use the services.
 
 Profiles, chats and settings live in a React context with a reducer (`src/state/`) and are saved to `localStorage`.
 
@@ -124,7 +125,8 @@ The prototype is built in nine phases, listed in `Spec.md`.
 | 4 · Launch and profiles | Built |
 | 5 · Asking | Built |
 | 6 · Thinking and answer | Built |
-| 7 and 8 | Not started |
+| 7 · History | Built |
+| 8 · Polish and QA | Not started |
 
 ## Fonts
 

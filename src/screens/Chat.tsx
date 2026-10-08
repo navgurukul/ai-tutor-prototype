@@ -10,6 +10,7 @@ import { chatsOf, useStore } from '../state/storeContext.ts'
 import styles from './Chat.module.css'
 import Conversation from './Conversation.tsx'
 import { useSidebarMode } from './useSidebarMode.ts'
+import { useTitles } from './useTitles.ts'
 
 // The chat screen: the sidebar, the voice control, and one conversation.
 export default function Chat() {
@@ -30,6 +31,8 @@ export default function Chat() {
   const drawerOpen = drawerWanted && mode !== 'full'
   const closeDrawer = useCallback(() => setDrawerWanted(false), [setDrawerWanted])
 
+  const titles = useTitles()
+
   // Nobody is signed in after a relaunch, so the app starts again from the top.
   if (!profile) return <Navigate to="/" replace />
 
@@ -37,11 +40,15 @@ export default function Chat() {
   const chat = chats.find((item) => item.id === chatId)
 
   function open(id: string | null) {
+    // Leaving a chat cuts its answer short, which is as finished as it gets.
+    if (chat) titles.request(chat)
     setChatId(id)
     setVisit(visit + 1)
     setDrawerWanted(false)
   }
 
+  // Switch and the idle return both end here. The speech stops as the chat
+  // closes, and the next student starts from the picker.
   function leave() {
     dispatch({ type: 'profile/enter', profileId: null })
     navigate('/')
@@ -74,7 +81,15 @@ export default function Chat() {
             onSpeed={(speed) => dispatch({ type: 'settings/set', settings: { speed } })}
           />
         </div>
-        <Conversation key={visit} profile={profile} chat={chat} onCreated={setChatId} />
+        <Conversation
+          key={visit}
+          profile={profile}
+          chat={chat}
+          onCreated={setChatId}
+          onAsk={titles.drop}
+          onSettled={titles.request}
+          onIdle={leave}
+        />
       </main>
 
       <Drawer open={drawerOpen} onClose={closeDrawer} label="Chats and profile">

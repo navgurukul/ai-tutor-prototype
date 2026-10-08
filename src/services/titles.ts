@@ -22,6 +22,11 @@ export const titles = {
     const known = answers.find((item) => item.text === answer || item.simpler === answer) ?? answers.find((item) => findAnswer(question, item.classNum) === item)
     if (known) return known.title
 
+    // A short question is its own best title.
+    const asked = question.replace(/\s+/g, ' ').trim().replace(/[.?!]+$/, '')
+    const length = asked.split(' ').length
+    if (length >= 3 && length <= 5) return asked
+
     const words = normalise(question).trim().split(' ').filter((word) => word && !filler.has(word)).slice(0, 4)
     if (words.length === 0) return 'A new question'
     if (words.length < 3) return `A question about ${words.join(' ')}`
