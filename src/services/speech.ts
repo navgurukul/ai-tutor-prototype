@@ -2,12 +2,10 @@
 //
 // Listening uses the Web Speech API. In Chrome and Edge that sends audio to
 // a cloud service, so it needs internet: fine for a prototype, and the real
-// app will use local speech-to-text. When the API is missing, the microphone
-// is refused, or the Fake mic scenario is on, a sample question is typed out
-// word by word instead, which also makes demos repeatable.
+// app will use local speech-to-text. When the API is missing or the
+// microphone is refused, a sample question is typed out word by word instead.
 
 import { parseAnswer } from './answerText.ts'
-import { scenarios } from './scenarios.ts'
 
 // The parts of the Web Speech API this file uses.
 type RecognitionResult = { isFinal: boolean; 0: { transcript: string } }
@@ -218,7 +216,7 @@ function indianEnglishVoice(): SpeechSynthesisVoice | undefined {
 export const speech = {
   // Whether listen() will use the real microphone or the scripted one.
   get micMode(): 'live' | 'scripted' {
-    return scenarios.get().fakeMic || !RecognitionClass() ? 'scripted' : 'live'
+    return RecognitionClass() ? 'live' : 'scripted'
   },
 
   get listening() {
@@ -232,7 +230,7 @@ export const speech = {
   listen(options: ListenOptions) {
     session?.cancel()
     const Recogniser = RecognitionClass()
-    session = scenarios.get().fakeMic || !Recogniser ? listenScripted(options) : listenLive(Recogniser, options)
+    session = Recogniser ? listenLive(Recogniser, options) : listenScripted(options)
   },
 
   // Stops and hands the transcript to onFinal.

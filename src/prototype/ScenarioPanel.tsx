@@ -13,7 +13,6 @@ const switches: { name: ScenarioName; label: string; effect: string }[] = [
   { name: 'memoryLow', label: 'Memory low', effect: 'Shows the warning. Switch it off and the warning goes away.' },
   { name: 'searchFindsNothing', label: 'Next search finds nothing', effect: 'Turns itself off after one search.' },
   { name: 'answerFails', label: 'Next answer fails', effect: 'Turns itself off after one answer.' },
-  { name: 'fakeMic', label: 'Fake mic', effect: 'Types out a sample question instead of listening.' },
   { name: 'shortIdle', label: 'Short idle timer', effect: 'Returns to the profile picker after 30 seconds, not 15 minutes.' },
 ]
 

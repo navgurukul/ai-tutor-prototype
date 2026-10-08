@@ -3,7 +3,7 @@
 
 import { prefix } from '../state/storage.ts'
 
-export type ScenarioName = 'slowLaptop' | 'memoryLow' | 'searchFindsNothing' | 'answerFails' | 'fakeMic' | 'shortIdle'
+export type ScenarioName = 'slowLaptop' | 'memoryLow' | 'searchFindsNothing' | 'answerFails' | 'shortIdle'
 
 export type Scenarios = Record<ScenarioName, boolean>
 
@@ -14,7 +14,6 @@ const off: Scenarios = {
   memoryLow: false,
   searchFindsNothing: false,
   answerFails: false,
-  fakeMic: false,
   shortIdle: false,
 }
 

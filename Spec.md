@@ -165,12 +165,12 @@ Each real system is faked by one module in `src/services/` with the async interf
 
 Every timing gets a random spread of ±20% so waits don't feel scripted.
 
-Speech recognition caveat: in Chrome and Edge, the Web Speech API sends audio to a cloud service, so it needs internet. That's fine for a prototype; the real app will use local speech-to-text. If the API is missing or the Fake mic scenario is on, `listen` types out a sample question word by word over about 3 seconds, which also makes demos repeatable.
+Speech recognition caveat: in Chrome and Edge, the Web Speech API sends audio to a cloud service, so it needs internet. That's fine for a prototype; the real app will use local speech-to-text. If the API is missing, `listen` types out a sample question word by word over about 3 seconds instead.
 
 Fake content in `src/data/`:
 
 - `textbooks.ts`: for Class 6 and 7, every chapter in Science and Mathematics (Class 7 Mathematics: Part 1 only), with real NCERT chapter names, a page range, and keywords. Classes 8 to 12 have no chapters, so their searches find nothing.
-- `answers.ts`, with the answers in `answers6.ts` and `answers7.ts`: about 70 canned answers spread across those chapters, each with a simpler version and the words that trigger it. The first answer whose trigger words fit the question wins, so narrow topics are listed before broad ones. Every question that works is listed in `docs/test-questions.md`; update that page whenever an answer changes. The Fake mic types these questions out. Mark key terms with `**`. Check every answer for facts before shipping. The POC said exoplanets were unconfirmed and that Pluto is the only dwarf planet, and both claims are wrong.
+- `answers.ts`, with the answers in `answers6.ts` and `answers7.ts`: about 70 canned answers spread across those chapters, each with a simpler version and the words that trigger it. The first answer whose trigger words fit the question wins, so narrow topics are listed before broad ones. Every question that works is listed in `docs/test-questions.md`; update that page whenever an answer changes. The scripted mic types these questions out. Mark key terms with `**`. Check every answer for facts before shipping. The POC said exoplanets were unconfirmed and that Pluto is the only dwarf planet, and both claims are wrong.
 - `names.ts`: 20 friendly adjectives (Brave, Clever, Curious, Kind, Bright, Calm, Happy, Quick, Gentle, Bold and so on), nothing that could read as an insult.
 - `animals.ts`: lion, elephant, tiger, panda, eagle, parrot, owl, penguin, dolphin, butterfly, each with a tint from the tokens file.
 
@@ -185,7 +185,6 @@ A Scenarios panel, opened from the prototype bar, lets anyone force the hard pat
 | Memory low | `memory.check` returns `low: true` |
 | Next search finds nothing | The next `retrieval.search` returns `found: false` |
 | Next answer fails | The next `model.generate` rejects |
-| Fake mic | Uses the scripted transcript instead of real recognition |
 | Short idle timer | The 15-minute idle return happens after 30 s |
 | Reset prototype | Clears all profiles, chats and settings, back to first launch |
 
@@ -384,7 +383,7 @@ The prototype is done when every box below is ticked on the deployed link in Chr
 - [ ] Two profiles on one laptop can never end up with the same name
 - [ ] Memory low scenario shows the banner on the current screen, and it goes away by itself once the scenario is switched off
 - [ ] A question asked during Cold model shows "Getting ready" first
-- [ ] Voice, Fake mic and typed questions all send; Cancel and Esc discard; the 60 s limit opens the text box with the transcript in it
+- [ ] Voice and typed questions all send; Cancel and Esc discard; the 60 s limit opens the text box with the transcript in it
 - [ ] The mic leads on the empty chat and under the messages; the text box appears only after "Type Your Question", and going back to the mic never starts listening by itself
 - [ ] Every question in `docs/test-questions.md` gets its answer in a profile of that class
 - [ ] Thinking steps change only when services finish; Slow laptop shows the 10 s caption

@@ -12,7 +12,6 @@ There are 70 answers: 41 for Class 6 and 29 for Class 7, in Science and Mathemat
 - **If a question has trigger words for two topics**, the more specific topic usually wins. "Is Pluto a planet?" gives the dwarf planets answer, not the planets answer.
 - **It does not remember the chat.** Each question is matched on its own words, so follow-ups do not work. After "How do scientists find answers?", "can you explain the third step more" has no trigger word and gets "I couldn’t find this", and "what is the hypothesis" gives the whole scientific method answer again, because "hypothesis" is one of its trigger words.
 - **"Make It Simpler"** works once on every answer in the tables below.
-- **Fake mic** (Scenarios, in the dark bar) types these questions out for you, one after another, starting with the ones marked with a star.
 
 ## The three results you can get
 
@@ -146,7 +145,6 @@ Open **Scenarios** in the dark bar at the top. Each switch changes what the next
 | Next answer fails | Any question from the tables | "Something went wrong." with a "Try Again" button, once |
 | Slow laptop | Any question from the tables | Every step takes 3 times longer. After 10 seconds a line appears: "Still working on it. Just a few more moments." |
 | Cold model, "Load again" | Any question, straight away | "Getting ready" shows as the first step |
-| Fake mic | Tap the mic | A question from this page is typed out for you. Tap the mic again to send it |
 
 ## What is not real yet
 

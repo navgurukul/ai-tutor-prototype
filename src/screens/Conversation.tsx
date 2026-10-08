@@ -151,7 +151,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
   }
 
   const mic = useListening({
-    // With Fake mic on, a question from this class that hasn't been asked yet.
+    // When the scripted mic is used, a question from this class that hasn't been asked yet.
     sample: samplesFor(profile.classNum).find((question) => !messages.some((message) => message.text === question)),
     onSend: (question) => send(question, 'mic'),
     // The words go to the text box, which opens so they can be fixed.

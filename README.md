@@ -63,8 +63,7 @@ All four flow boards work end to end.
 - **Every launch after that:** the profile picker. Reloading the page counts as a new launch.
 - **Names:** a made-up name like "Brave Owl" is offered, and two profiles on one laptop can never have the same name.
 - **Low memory:** switch on **Scenarios → Memory low** to see the warning on whatever screen is up. Switch it off and the warning goes away by itself: there is no button, the app keeps checking while the warning is up.
-- **Asking:** the mic leads, on the empty chat and under the messages. Tap it to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text box instead. To type, press "Type Your Question" under the mic: the text box takes the mic's place. "Speak Your Question" under the box on an empty chat, or the small mic in the box once there are messages, goes back to the mic, which waits for a tap before it listens.
-- **Fake mic:** switch on **Scenarios → Fake mic** to have a sample question typed out instead of using the microphone. The real microphone needs Chrome or Edge, internet, and permission.
+- **Asking:** the mic leads, on the empty chat and under the messages. Tap it to listen and tap again to send. Cancel or Esc throws the words away, and after 60 seconds they move into the text box instead. To type, press "Type Your Question" under the mic: the text box takes the mic's place. "Speak Your Question" under the box on an empty chat, or the small mic in the box once there are messages, goes back to the mic, which waits for a tap before it listens. The real microphone needs Chrome or Edge, internet, and permission; without those, a sample question is typed out word by word instead.
 - **Answering:** thinking steps show under the question and change only when a service finishes. When the search is done, its step says where the answer was found, like "Found it in Science, Chapter 12, page 215". Then the answer appears with its book, chapter and page, and is read aloud if Voice is on. While it is read, the word being said is marked and the words still to come are grey.
 - **Not in the books:** when the search finds nothing, the tutor says "I couldn't find this in your Class 6 books. Try asking it another way, or ask your teacher." It never answers from outside the books.
 - **After an answer:** "Hear Again" reads it again and turns into "Stop" while the tutor speaks. "Make It Simpler" gives the same answer in easier words. Tapping the mic stops the voice and starts listening.
@@ -93,7 +92,7 @@ Nothing real runs behind the prototype. Each real system is faked by one file in
 
 Timings copy an 8 GB laptop and vary by 20% either way. Speech recognition in Chrome and Edge needs internet; when it isn't available, a sample question is typed out word by word.
 
-**Scenarios** in the dark bar forces the hard paths: Slow laptop, Memory low, Next search finds nothing, Next answer fails, Fake mic, Short idle timer, Cold model and Reset prototype. Choices are saved in `localStorage`.
+**Scenarios** in the dark bar forces the hard paths: Slow laptop, Memory low, Next search finds nothing, Next answer fails, Short idle timer, Cold model and Reset prototype. Choices are saved in `localStorage`.
 
 Profiles, chats and settings live in a React context with a reducer (`src/state/`) and are saved to `localStorage`.
 
@@ -150,7 +149,7 @@ Phase 8 checked the build against the acceptance checklist in `Spec.md`. The che
 
 Still to check by hand, because a script can't:
 
-- The real microphone and the real tutor voice, in Chrome or Edge. The scripts used the Fake mic and a stand-in voice.
+- The real microphone and the real tutor voice, in Chrome or Edge. The scripts used the scripted mic and a stand-in voice.
 - The deployed link on Windows, which is where the checklist asks for the final tick.
 - The full 15-minute idle return. Only the 30-second version was waited out.
 
