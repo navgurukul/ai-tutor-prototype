@@ -10,6 +10,7 @@
   font-size: var(--text-size);
   line-height: var(--text-line);
   font-weight: var(--weight-regular);
+  outline: none;
 }
 
 .input::placeholder {

@@ -20,6 +20,7 @@
   line-height: var(--h3-line);
   font-weight: var(--weight-heavy);
   text-align: center;
+  outline: none;
 }
 
 /* Keeps its line even when empty, so the screen doesn't jump. */
