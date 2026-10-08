@@ -1,7 +1,8 @@
 import { Square, Volume2 } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { useMemo } from 'react'
+import { parseAnswer, type Block, type Piece } from '../services/answerText.ts'
 import Button from './Button.tsx'
-import SourceChip from './SourceChip.tsx'
+import SourceLine from './SourceLine.tsx'
 import styles from './TutorAnswer.module.css'
 
 type Props = {
@@ -10,6 +11,9 @@ type Props = {
   text: string
   source?: { label: string; detail: string }
   speaking?: boolean
+  // While speaking: the word the voice is on, counted through the whole
+  // answer from 0. Before the first word it is -1.
+  spokenWord?: number
   onHearAgain?: () => void
   onStop?: () => void
   onExplainSimpler?: () => void
@@ -17,54 +21,70 @@ type Props = {
   busy?: boolean
 }
 
-function inline(text: string): ReactNode[] {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, index) =>
-    index % 2 === 1 ? (
-      <strong key={index} className={styles.term}>
-        {part}
-      </strong>
-    ) : (
-      part
-    ),
-  )
+// While the tutor speaks, the words still to come are grey, the word being
+// said is marked and the words already said are back to normal.
+function wordClass(word: number, spokenWord: number | undefined) {
+  if (spokenWord === undefined || word > spokenWord) return styles.word
+  return word === spokenWord ? `${styles.word} ${styles.now}` : `${styles.word} ${styles.said}`
 }
 
-function block(text: string, index: number) {
-  if (text.startsWith('### ')) {
+function inline(pieces: Piece[], spokenWord: number | undefined) {
+  return pieces.map((piece, index) => {
+    const words =
+      piece.word === undefined ? (
+        piece.text
+      ) : (
+        <span key={index} className={wordClass(piece.word, spokenWord)}>
+          {piece.text}
+        </span>
+      )
+    return piece.term ? (
+      <strong key={index} className={styles.term}>
+        {words}
+      </strong>
+    ) : (
+      words
+    )
+  })
+}
+
+function block({ kind, lines }: Block, index: number, spokenWord: number | undefined) {
+  if (kind === 'subheading') {
     return (
       <h4 key={index} className="h6">
-        {inline(text.slice(4))}
+        {inline(lines[0], spokenWord)}
       </h4>
     )
   }
-  if (text.startsWith('## ')) {
+  if (kind === 'heading') {
     return (
       <h3 key={index} className="h5">
-        {inline(text.slice(3))}
+        {inline(lines[0], spokenWord)}
       </h3>
     )
   }
-  const lines = text.split('\n')
-  if (lines.every((line) => line.startsWith('- '))) {
+  if (kind === 'list') {
     return (
       <ul key={index} className={styles.list}>
         {lines.map((line, item) => (
-          <li key={item}>{inline(line.slice(2))}</li>
+          <li key={item}>{inline(line, spokenWord)}</li>
         ))}
       </ul>
     )
   }
-  return <p key={index}>{inline(text)}</p>
+  return <p key={index}>{inline(lines[0], spokenWord)}</p>
 }
 
 // No bubble: the answer is the page.
-export default function TutorAnswer({ text, source, speaking = false, onHearAgain, onStop, onExplainSimpler, busy = false }: Props) {
+export default function TutorAnswer({ text, source, speaking = false, spokenWord = -1, onHearAgain, onStop, onExplainSimpler, busy = false }: Props) {
+  const blocks = useMemo(() => parseAnswer(text), [text])
   const hasActions = onHearAgain || onExplainSimpler
+  const body = speaking ? `text weight-medium ${styles.body} ${styles.speaking}` : `text weight-medium ${styles.body}`
   return (
     <article className={styles.answer} aria-label="Tutor's answer" data-inspect="TutorAnswer">
-      <div className={`text ${styles.body}`}>{text.trim().split(/\n{2,}/).map(block)}</div>
+      <div className={body}>{blocks.map((item, index) => block(item, index, speaking ? spokenWord : undefined))}</div>
 
-      {source && <SourceChip label={source.label} detail={source.detail} />}
+      {source && <SourceLine label={source.label} detail={source.detail} />}
 
       {hasActions && (
         <div className={styles.actions}>

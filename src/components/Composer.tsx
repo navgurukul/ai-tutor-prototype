@@ -7,7 +7,7 @@ type Props = {
   value: string
   onChange: (value: string) => void
   onSend: () => void
-  // Goes back to speaking. Left out where a mic is already on screen.
+  // Goes back to the mic. Left out where the way back is under the box.
   onSpeak?: () => void
   // True while an answer is being worked on: the student can still type.
   busy?: boolean

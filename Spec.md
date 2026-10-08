@@ -91,7 +91,7 @@ src/
   data/          textbooks.ts, answers.ts, names.ts, animals.ts
   components/    Button, IconButton, Chip, Input, NameInput, MicButton, Composer,
                  Sidebar, HistoryRow, ProfileCard, MessageStudent, TutorAnswer,
-                 SourceChip, ThinkingSteps, StatusBanner, Dialog
+                 SourceLine, ThinkingSteps, StatusBanner, Dialog
   screens/       Welcome, CreateProfile, ProfilePicker, Chat
   prototype/     PrototypeBar, ScenarioPanel, FrameSizer, FlowsPage, TokensPage, ComponentsPage
   inspect/       InspectProvider, InspectOverlay, InspectPanel, tokenMap.ts, measure.ts
@@ -142,7 +142,7 @@ Rules from the tokens file the agent tends to miss:
 - White text only on `purple`, `purple-dark`, `ink` and `green-text`. Never white on `green` or `orange`.
 - Status messages always pair colour with an icon and words.
 - Focus ring: 3 px `purple`, 2 px offset, on every focusable element, using `:focus-visible`.
-- Key terms in answers are weight 500, with no underline and no border, so they never look like links.
+- Key terms in answers are weight 700 against a body of weight 500, with no underline and no border, so they never look like links.
 - Answers max out at 68ch; the reading column at 720 px.
 - Titles use `text-wrap: balance`, paragraphs `text-wrap: pretty`.
 - Motion is parked until the mascot decision, so stick to the 200 ms rule above and add no character animation.
@@ -246,13 +246,13 @@ Every profile entry and every New Chat starts here. Centred, top to bottom:
 - The 128 px empty-state mic in `purple`, with the caption "Tap to speak". At rest a soft purple ripple spreads from its edge, to show it is ready.
 - The way into typing: "Can't speak right now?" followed by a text button with a keyboard icon, "Type Your Question".
 
-There are no suggestion chips and no text box until the student asks for one. Pressing "Type Your Question" opens the text box under the mic, in space kept for it, so the mic does not move. The box stays open for the rest of that chat.
+There are no suggestion chips and no text box until the student asks for one. Pressing "Type Your Question" swaps the mic for the text box, in the same space, so the greeting and the line under it do not move. Only one of the two is on screen at a time. Under the text box the line reads "Ready to speak?" followed by a text button with a mic icon, "Speak Your Question", which swaps back to the mic. The mic then waits for a tap: switching never starts listening by itself.
 
 An empty chat isn't added to Recent chats until its first question is sent.
 
 ### Listening
 
-Tapping the mic starts listening. The mic turns `purple-dark` with `white-60` pulse rings, the caption becomes "Listening. Tap again to send.", and a "Cancel" ghost button takes the place of the way into typing. The live transcript shows in text-lg: on the empty chat it takes the place of the greeting and the question, and under the messages it appears just above the mic. Once sent, the words become the student's message bubble.
+Tapping the mic starts listening. The mic turns `purple-dark` with `white-60` pulse rings, the caption becomes "Listening. Tap again to send.", and a "Cancel" ghost button takes the place of the way into typing. The live transcript shows in text-lg at weight 500 on a `lilac` background (`radius-16`, padding 8 16, as wide as its words): on the empty chat it takes the place of the greeting and the question, and under the messages it appears just above the mic. Once sent, the words become the student's message bubble, which has the same colour.
 
 - Tap again: stop and send the final transcript.
 - Cancel or Esc: throw the transcript away and go back to the idle mic.
@@ -262,7 +262,7 @@ Tapping the mic starts listening. The mic turns `purple-dark` with `white-60` pu
 
 After the first question, the empty state goes away. Messages fill the column and the mic docks under them, centred: a 64 px `purple` mic with the same ripple, its caption, and the same "Can't speak right now? Type Your Question" line below it. The docked mic behaves exactly like the big one. There is no white bar until the student asks to type.
 
-Typing: the text box (the Composer) takes the place of the docked mic. It holds a small mic icon button, "Speak Instead", the text field and a Send icon button. While the student types, the edge of the box turns `purple`; the field inside has no highlight of its own. Enter sends; Shift+Enter adds a line. "Speak Instead" goes back to the mic and starts listening at once. Sending a question by voice also closes the text box. If the student opened the text box on the empty chat, it is still open after the first question.
+Typing: the text box (the Composer) takes the place of the docked mic. It holds a small mic icon button, "Speak Instead", the text field and a Send icon button. While the student types, the edge of the box turns `purple`; the field inside has no highlight of its own. Enter sends; Shift+Enter adds a line. "Speak Instead" goes back to the mic, which then waits for a tap before it listens. Sending a question by voice also closes the text box. If the student opened the text box on the empty chat, it is still open after the first question.
 
 Send and the mic are disabled while an answer is being worked on, and the mic's caption is blank, but the student can still type.
 
@@ -284,11 +284,13 @@ All step changes and the answer's arrival go through an `aria-live="polite"` reg
 
 ### Answer
 
-The tutor answer has no bubble: `text` at weight 400, h5 and h6 for any headings, key terms at weight 500, max 68ch. Under it sits the Source chip, for example "NCERT · Class 6 Science · Ch 8 · p. 74", then its controls. The two buttons are text buttons with no border, so they stay quieter than the answer:
+The tutor answer has no bubble: `text` at weight 500, h5 and h6 for any headings, key terms at weight 700, max 68ch. Under it sits the Source line, for example "NCERT · Class 6 Science · Ch 8 · p. 74", then its controls. The two buttons are text buttons with no border, so they stay quieter than the answer:
 
 - "Hear Again" (volume icon). While the tutor is speaking, this button becomes "Stop" (square icon).
 - "Make It Simpler". Adds a small student message, "Make it simpler", then runs the steps again, skipping search and showing only "Putting it into simpler words", and gives a new, simpler answer with the same source.
-- The Source chip itself counts as the third control. In the prototype it shows a tooltip with the full book and page; in the real app it will open the page.
+- The Source line is not a control. It is plain words with a book icon (`text-sm`, `gray-700`), with no pill, border or fill, so it never looks like something to press. Hovering shows a tooltip with the full book, chapter and page.
+
+While the tutor speaks an answer, the answer shows where the voice is: the words still to come turn `gray-500`, the word being said is `purple-dark` on `lilac`, and the words already said go back to `gray-900`. When the voice stops, the whole answer is `gray-900` again. The word comes from the voice itself where the voice reports it; where it does not, the app steps through each sentence at about speaking pace.
 
 If Voice is on, the newest answer starts speaking as soon as it appears. Older answers only speak through Hear Again. Tapping the mic while the tutor is speaking stops the speech at once and starts listening. Switching profiles, opening another chat or New Chat also stops speech.
 
@@ -367,7 +369,7 @@ Nine phases, each small enough for one agent session and each ending in somethin
 | 3 · Services | Store, `localStorage`, all simulated services, `data/` files, Scenarios panel | A temporary debug page can call each service and every scenario changes its result |
 | 4 · Launch and profiles | Background load and memory check, low-memory banner, Welcome, the three profile steps, Profile picker | First launch runs Welcome to empty chat; a second launch opens the picker; names never repeat |
 | 5 · Asking | Chat layout, sidebar (full, rail, drawer), empty chat, typing, listening, Cancel, 60 s limit, docked mic and text box | A question can be sent by voice, Fake mic and keyboard |
-| 6 · Thinking and answer | Thinking steps, slow-wait caption, not-found message, failure with Try Again, answer, Source chip, Hear Again, Stop, Make It Simpler, speed, interrupting | Every scenario in the Scenarios panel produces the behaviour on board 3 |
+| 6 · Thinking and answer | Thinking steps, slow-wait caption, not-found message, failure with Try Again, answer, Source line, Hear Again, Stop, Make It Simpler, speed, interrupting | Every scenario in the Scenarios panel produces the behaviour on board 3 |
 | 7 · History | Recent chats per profile, reopening and continuing, placeholder and generated titles, Switch, idle return | Board 4 works end to end, including the 30 s Short idle timer |
 | 8 · Polish and QA | Keyboard pass, 150% zoom, reduced motion, all frame sizes, contrast check with Inspect, README update | Every item in the checklist below is ticked |
 
@@ -383,7 +385,7 @@ The prototype is done when every box below is ticked on the deployed link in Chr
 - [ ] Memory low scenario shows the banner on the current screen, and it goes away by itself once the scenario is switched off
 - [ ] A question asked during Cold model shows "Getting ready" first
 - [ ] Voice, Fake mic and typed questions all send; Cancel and Esc discard; the 60 s limit opens the text box with the transcript in it
-- [ ] The mic leads on the empty chat and under the messages; the text box appears only after "Type Your Question"
+- [ ] The mic leads on the empty chat and under the messages; the text box appears only after "Type Your Question", and going back to the mic never starts listening by itself
 - [ ] Every question in `docs/test-questions.md` gets its answer in a profile of that class
 - [ ] Thinking steps change only when services finish; Slow laptop shows the 10 s caption
 - [ ] Not-found and failure each look and read as specified; Try Again resends

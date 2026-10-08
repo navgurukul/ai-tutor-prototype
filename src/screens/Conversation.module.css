@@ -21,6 +21,7 @@
 /* Layers that share one space: only one shows at a time, and swapping them
    moves nothing around them. */
 .greeting,
+.ask,
 .below {
   display: grid;
   width: 100%;
@@ -44,21 +45,34 @@
   text-align: center;
 }
 
+/* The text box sits in the middle of the room the big mic leaves. */
+.ask .layer {
+  justify-content: center;
+}
+
 .hello {
   color: var(--gray-700);
 }
 
-/* What the mic has heard, two lines at most. Once a long transcript fills
-   both, the newest words stay in view and the oldest slide out above. */
+/* What the mic has heard, on the lilac of the message it will become. As
+   wide as its words, never stretched. */
 .heard {
-  display: flex;
-  flex-direction: column-reverse;
-  width: 100%;
-  max-height: calc(var(--text-lg-line) * 2);
-  overflow: hidden;
+  max-width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-16);
+  background: var(--lilac);
   color: var(--gray-900);
   text-align: center;
   overflow-wrap: anywhere;
+}
+
+/* Two lines at most. Once a long transcript fills both, the newest words
+   stay in view and the oldest slide out above. */
+.heardWords {
+  display: flex;
+  flex-direction: column-reverse;
+  max-height: calc(var(--text-lg-line) * 2);
+  overflow: hidden;
 }
 
 .micBlock {
@@ -74,13 +88,7 @@
   color: var(--gray-700);
 }
 
-/* On the empty chat the text box opens in the room kept for it here, so the
-   mic stays where it is. */
-.emptyColumn .below {
-  min-height: calc(var(--size-40) + var(--space-2) * 2 + var(--border-2) * 2);
-}
-
-.typeInstead {
+.otherWay {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

@@ -22,7 +22,7 @@ Motion is parked until the team decides whether there will be a mascot.
 | `blue` | `#5B7DEF` | Accent |
 | `coral` | `#FF685B` | Accent |
 | `ink` | `#262626` | Primary text, dark fills (same as `gray-900`) |
-| `bg` | `#F3F9EB` | App background |
+| `bg` | `#F8FBF3` | App background |
 | `white` | `#FFFFFF` | Sidebar, cards, dialogs, composer |
 
 ### Tints
@@ -148,7 +148,7 @@ Weights: Baloo 2 uses 800 for h1 to h4 and 700 for h5 and h6. Synonym uses 400 f
 
 - Nothing goes below 12.
 - Titles use `text-wrap: balance` and paragraphs use `text-wrap: pretty`.
-- Key terms in answers are weight 500, with no underline and no border, so they never look like links.
+- Key terms in answers are weight 700 against a body of weight 500, with no underline and no border, so they never look like links.
 - Answer text has a max line length of 68ch.
 - Hindi text may need 16 / 28 instead of 16 / 24 because of the matras. Set it with `:lang(hi)` once tested.
 - Students can zoom text to 1.5× or more.
@@ -259,9 +259,10 @@ Button labels are in Title Case, every word capitalised: "Start Asking", "Make I
 | Grade chip (picker) | Height 48 · `radius-pill` · selected `purple` with `white` text |
 | Sidebar | 280 wide · `white` · `border-1` `gray-200` on the right · padding 16 |
 | History row | Height 40 · `radius-8` · padding 0 16 · `text-sm` · hover `gray-100` · active `lilac` with `purple-dark` text |
-| Student message | `lilac` · `16 16 8 16` · padding 16 · `text` |
-| Tutor answer | No bubble · `text` 400 · `h5` and `h6` for headings · key terms 500 · max 68ch · text buttons under it |
-| Source chip | Chip style · book icon · e.g. "NCERT · Class 8 Science · Ch 3" |
+| Student message | `lilac` · `16 16 8 16` · padding 16 · `text` 500 |
+| Live transcript | `lilac` · `radius-16` · padding 8 16 · `text-lg` 500 · as wide as its words, two lines at most |
+| Tutor answer | No bubble · `text` 500 · `h5` and `h6` for headings · key terms 700 · max 68ch · text buttons under it · while it is spoken: words to come `gray-500`, the word being said `purple-dark` on `lilac` (`radius-8`), words already said `gray-900` |
+| Source line | Not a control: book icon 16 · `text-sm` 500 `gray-700` · no pill, border or fill · e.g. "NCERT · Class 8 Science · Ch 3" |
 | Composer | The text box, shown only once the student asks to type · `radius-24` · `white` · `elevation-3` · padding 8 · max width 720 · while typing: `border-2` `purple` on the box, no highlight on the field inside |
 | Status banner | Status pair · as wide as its words, never stretched · icon 24 · `text` 500 · `radius-16` · optional ghost button 48 from the words |
 | Dialog | `radius-24` · `white` · padding 32 · `elevation-4` · `scrim` behind |

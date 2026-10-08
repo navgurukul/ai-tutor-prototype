@@ -15,7 +15,7 @@ import MicButton from '../components/MicButton.tsx'
 import NameInput from '../components/NameInput.tsx'
 import { AddProfileCard, ProfileCard } from '../components/ProfileCard.tsx'
 import Sidebar from '../components/Sidebar.tsx'
-import SourceChip from '../components/SourceChip.tsx'
+import SourceLine from '../components/SourceLine.tsx'
 import StatusBanner from '../components/StatusBanner.tsx'
 import ThinkingSteps from '../components/ThinkingSteps.tsx'
 import TutorAnswer from '../components/TutorAnswer.tsx'
@@ -430,15 +430,12 @@ export default function ComponentsPage() {
           </State>
         </Specimen>
 
-        <Specimen name="Source chip" spec="Chip style · book icon · tooltip with the full book and page (radius-8, ink)">
+        <Specimen name="Source line" spec="Not a control: book icon 16 · text-sm 500 gray-700 · no pill, border or fill · tooltip with the full book and page (radius-8, ink)">
           <State label="Default">
-            <SourceChip {...sampleSource} />
-          </State>
-          <State label="Focus" force="focus" target="button">
-            <SourceChip {...sampleSource} />
+            <SourceLine {...sampleSource} />
           </State>
           <State label="Hover, with its tooltip" force="hover">
-            <SourceChip {...sampleSource} />
+            <SourceLine {...sampleSource} />
           </State>
         </Specimen>
 
@@ -619,7 +616,7 @@ export default function ComponentsPage() {
       </Section>
 
       <Section id="messages" title="Messages">
-        <Specimen name="Student message" spec="lilac · radius 16 16 8 16 · padding 16 · text" stack>
+        <Specimen name="Student message" spec="lilac · radius 16 16 8 16 · padding 16 · text 500" stack>
           <State label="Default" wide>
             <div className={styles.column}>
               <MessageStudent>What is the solar system?</MessageStudent>
@@ -639,7 +636,7 @@ export default function ComponentsPage() {
           </State>
         </Specimen>
 
-        <Specimen name="Tutor answer" spec="No bubble · text 400 · h5 and h6 for headings · max 68ch · key terms at weight 500 · text buttons under it" stack>
+        <Specimen name="Tutor answer" spec="No bubble · text 500 · h5 and h6 for headings · max 68ch · key terms at weight 700 · text buttons under it · while speaking: words to come gray-500, the word being said purple-dark on lilac" stack>
           <State label="Default" wide>
             <div className={styles.column}>
               <TutorAnswer text={sampleAnswer} source={sampleSource} onHearAgain={() => {}} onExplainSimpler={() => {}} />
@@ -651,6 +648,7 @@ export default function ComponentsPage() {
                 text="The **solar system** is the Sun and everything that travels around it."
                 source={sampleSource}
                 speaking
+                spokenWord={6}
                 onHearAgain={() => {}}
                 onStop={() => {}}
                 onExplainSimpler={() => {}}
@@ -673,7 +671,7 @@ export default function ComponentsPage() {
           <State label="Typing" force="focus" target="textarea" wide>
             <ComposerDemo text="How many planets are there?" />
           </State>
-          <State label="On the empty chat, where the big mic is still on screen" wide>
+          <State label="On the empty chat, where the way back to the mic is under the box" wide>
             <ComposerDemo speak={false} />
           </State>
           <State label="While an answer is being worked on" wide>

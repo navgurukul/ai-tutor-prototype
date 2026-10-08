@@ -1,7 +1,23 @@
-.wrap {
+.source {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   max-width: 100%;
+  color: var(--gray-700);
+  cursor: default;
+}
+
+.source svg {
+  flex: none;
+  width: var(--icon-16);
+  height: var(--icon-16);
+}
+
+.label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tooltip {
@@ -20,8 +36,7 @@
   transition: transform var(--motion), opacity var(--motion);
 }
 
-.wrap:hover .tooltip,
-.wrap:focus-within .tooltip {
+.source:hover .tooltip {
   opacity: 1;
   transform: none;
 }

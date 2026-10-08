@@ -1,4 +1,4 @@
-import { Keyboard } from 'lucide-react'
+import { Keyboard, Mic } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import Button from '../components/Button.tsx'
 import Composer from '../components/Composer.tsx'
@@ -54,8 +54,8 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
   const empty = messages.length === 0
 
   const [draft, setDraft] = useState('')
-  // The text box shows only once the student asks to type, and then stays
-  // for the rest of this chat.
+  // The text box shows only once the student asks to type, and stays until
+  // they go back to the mic.
   const [typing, setTyping] = useState(false)
   const field = useRef<HTMLTextAreaElement>(null)
   // Whichever mic is on screen: the big one or the one under the messages.
@@ -80,12 +80,15 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     settings.current = state.settings
   })
 
-  // The answer being read aloud, if any.
+  // The answer being read aloud, if any, and the word the voice is on.
   const [speakingId, setSpeakingId] = useState<string | null>(null)
+  const [spokenWord, setSpokenWord] = useState(-1)
   useEffect(() => speech.on('end', () => setSpeakingId(null)), [])
+  useEffect(() => speech.on('word', () => setSpokenWord(speech.word)), [])
   function speak(message: Message) {
     speech.speak(message.text, speechRate[settings.current.speed])
     setSpeakingId(message.id)
+    setSpokenWord(-1)
   }
 
   // Leaving the chat stops the tutor's voice, and so does turning Voice off.
@@ -187,11 +190,10 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     setFocusMove({ to: 'field' })
   }
 
-  // The small mic in the text box: back to the mic, already listening.
+  // Back to the mic. It waits for a tap before it listens.
   function speakInstead() {
     setTyping(false)
     setFocusMove({ to: 'mic' })
-    if (!busy) tapMic()
   }
 
   function explainSimpler(answer: Message) {
@@ -228,15 +230,21 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     <Composer value={draft} onChange={setDraft} onSend={() => send(draft)} onSpeak={onSpeak} busy={busy} inputRef={field} />
   )
 
-  // Under the mic: the way into typing, or Cancel while listening. Both
-  // layers share one space, so swapping them moves nothing.
-  const underMic = (
+  // Under the mic or the text box: the way over to the other one, or Cancel
+  // while listening. Both layers share one space, so swapping them moves
+  // nothing.
+  const switchLine = (
     <div className={styles.below}>
       <div className={layer(!mic.listening)}>
         {typing ? (
-          <div className={styles.typeBox}>{textBox()}</div>
+          <div className={`text-sm ${styles.otherWay}`}>
+            <span>Ready to speak?</span>
+            <Button variant="text" icon={<Mic aria-hidden="true" />} onClick={speakInstead}>
+              Speak Your Question
+            </Button>
+          </div>
         ) : (
-          <div className={`text-sm ${styles.typeInstead}`}>
+          <div className={`text-sm ${styles.otherWay}`}>
             <span>Can’t speak right now?</span>
             <Button variant="text" icon={<Keyboard aria-hidden="true" />} onClick={startTyping}>
               Type Your Question
@@ -252,9 +260,12 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
     </div>
   )
 
+  // The student's words as they are heard, on the colour their message will have.
   const heard = (
-    <div className={`text-lg ${styles.heard}`}>
-      <p>{mic.transcript}</p>
+    <div className={`text-lg weight-medium ${styles.heard}`}>
+      <div className={styles.heardWords}>
+        <p>{mic.transcript}</p>
+      </div>
     </div>
   )
 
@@ -272,8 +283,17 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
             <div className={layer(hearing)}>{heard}</div>
           </div>
 
-          {micBlock('empty')}
-          {underMic}
+          {/* The text box takes the mic's place, in the same space, so the
+              greeting and the line under it stay where they are. */}
+          <div className={styles.ask}>
+            <div className={layer(!typing)}>{micBlock('empty')}</div>
+            {typing && (
+              <div className={styles.layer}>
+                <div className={styles.typeBox}>{textBox()}</div>
+              </div>
+            )}
+          </div>
+          {switchLine}
         </div>
       </div>
     )
@@ -295,6 +315,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
                 text={message.text}
                 source={message.source && { label: sourceLabel(message.source), detail: sourceDetail(message.source) }}
                 speaking={message.id === speakingId}
+                spokenWord={spokenWord}
                 onHearAgain={() => speak(message)}
                 onStop={() => speech.cancel()}
                 onExplainSimpler={message.source && !message.simpler ? () => explainSimpler(message) : undefined}
@@ -319,7 +340,7 @@ export default function Conversation({ profile, chat, onCreated, onAsk, onSettle
           <div className={styles.voice}>
             {hearing && heard}
             {micBlock('docked')}
-            {underMic}
+            {switchLine}
           </div>
         )}
       </div>

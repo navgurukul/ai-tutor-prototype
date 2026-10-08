@@ -26,9 +26,33 @@
   list-style: disc;
 }
 
-/* Key terms: a little heavier, and nothing that looks like a link. */
+/* Key terms: bold against the medium body, and nothing that looks like a link. */
 .term {
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-bold);
+}
+
+/* Each word takes its colour from the answer, until the tutor reads it out.
+   Then the words still to come go grey, the one being said sits on lilac and
+   the ones already said go back to normal. The lilac is padding with the
+   same margin taken away, so marking a word moves nothing. */
+.word {
+  margin: 0 calc(var(--space-1) * -1);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-8);
+  transition: color var(--motion), background-color var(--motion);
+}
+
+.speaking .word {
+  color: var(--gray-500);
+}
+
+.speaking .said {
+  color: var(--gray-900);
+}
+
+.speaking .now {
+  background: var(--lilac);
+  color: var(--purple-dark);
 }
 
 /* Text buttons, pulled left so their words line up with the answer. */

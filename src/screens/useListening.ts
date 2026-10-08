@@ -16,7 +16,7 @@ type Options = {
 }
 
 // One mic: tap to listen, tap again to send. The big mic on the empty chat
-// and the small one in the composer both work through this.
+// and the smaller one under the messages both work through this.
 export function useListening(options: Options) {
   const [listening, setListening] = useState(false)
   const [transcript, setTranscript] = useState('')
